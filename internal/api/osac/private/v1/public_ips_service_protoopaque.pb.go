@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2025 Red Hat, Inc.
+// Copyright (c) 2026 Red Hat, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
 // the License. You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 // versions:
 // 	protoc-gen-go v1.36.5
 // 	protoc        (unknown)
-// source: osac/private/v1/host_types_service.proto
+// source: osac/private/v1/public_ips_service.proto
 
 //go:build protoopaque
 
@@ -37,7 +37,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type HostTypesListRequest struct {
+type PublicIPsListRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Offset      int32                  `protobuf:"varint,1,opt,name=offset,proto3,oneof"`
 	xxx_hidden_Limit       int32                  `protobuf:"varint,2,opt,name=limit,proto3,oneof"`
@@ -49,21 +49,21 @@ type HostTypesListRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *HostTypesListRequest) Reset() {
-	*x = HostTypesListRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[0]
+func (x *PublicIPsListRequest) Reset() {
+	*x = PublicIPsListRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesListRequest) String() string {
+func (x *PublicIPsListRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesListRequest) ProtoMessage() {}
+func (*PublicIPsListRequest) ProtoMessage() {}
 
-func (x *HostTypesListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[0]
+func (x *PublicIPsListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -74,21 +74,21 @@ func (x *HostTypesListRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesListRequest) GetOffset() int32 {
+func (x *PublicIPsListRequest) GetOffset() int32 {
 	if x != nil {
 		return x.xxx_hidden_Offset
 	}
 	return 0
 }
 
-func (x *HostTypesListRequest) GetLimit() int32 {
+func (x *PublicIPsListRequest) GetLimit() int32 {
 	if x != nil {
 		return x.xxx_hidden_Limit
 	}
 	return 0
 }
 
-func (x *HostTypesListRequest) GetFilter() string {
+func (x *PublicIPsListRequest) GetFilter() string {
 	if x != nil {
 		if x.xxx_hidden_Filter != nil {
 			return *x.xxx_hidden_Filter
@@ -98,7 +98,7 @@ func (x *HostTypesListRequest) GetFilter() string {
 	return ""
 }
 
-func (x *HostTypesListRequest) GetOrder() string {
+func (x *PublicIPsListRequest) GetOrder() string {
 	if x != nil {
 		if x.xxx_hidden_Order != nil {
 			return *x.xxx_hidden_Order
@@ -108,85 +108,110 @@ func (x *HostTypesListRequest) GetOrder() string {
 	return ""
 }
 
-func (x *HostTypesListRequest) SetOffset(v int32) {
+func (x *PublicIPsListRequest) SetOffset(v int32) {
 	x.xxx_hidden_Offset = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *HostTypesListRequest) SetLimit(v int32) {
+func (x *PublicIPsListRequest) SetLimit(v int32) {
 	x.xxx_hidden_Limit = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *HostTypesListRequest) SetFilter(v string) {
+func (x *PublicIPsListRequest) SetFilter(v string) {
 	x.xxx_hidden_Filter = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *HostTypesListRequest) SetOrder(v string) {
+func (x *PublicIPsListRequest) SetOrder(v string) {
 	x.xxx_hidden_Order = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *HostTypesListRequest) HasOffset() bool {
+func (x *PublicIPsListRequest) HasOffset() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *HostTypesListRequest) HasLimit() bool {
+func (x *PublicIPsListRequest) HasLimit() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *HostTypesListRequest) HasFilter() bool {
+func (x *PublicIPsListRequest) HasFilter() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *HostTypesListRequest) HasOrder() bool {
+func (x *PublicIPsListRequest) HasOrder() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *HostTypesListRequest) ClearOffset() {
+func (x *PublicIPsListRequest) ClearOffset() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Offset = 0
 }
 
-func (x *HostTypesListRequest) ClearLimit() {
+func (x *PublicIPsListRequest) ClearLimit() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Limit = 0
 }
 
-func (x *HostTypesListRequest) ClearFilter() {
+func (x *PublicIPsListRequest) ClearFilter() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Filter = nil
 }
 
-func (x *HostTypesListRequest) ClearOrder() {
+func (x *PublicIPsListRequest) ClearOrder() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Order = nil
 }
 
-type HostTypesListRequest_builder struct {
+type PublicIPsListRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	// Index of the first result. If not specified the default value will be zero.
 	Offset *int32
-	Limit  *int32
+	// Maximum number of results to be returned by the server. When not specified all the results will be returned. Note
+	// that there may not be enough results to return, and that the server may decide, for performance reasons, to return
+	// less results than requested.
+	Limit *int32
+	// Filter criteria.
+	//
+	// The value of this parameter is a [CEL](https://cel.dev) expression used to select which objects to return. The
+	// built-in `this` variable refers to the object being tested and `now` refers to the current date and time. If the
+	// expression evaluates to `true` the object is included in the results. For example, to retrieve all public IPs
+	// in ALLOCATED state:
+	//
+	//	this.status.state == PUBLIC_IP_STATE_ALLOCATED
+	//
+	// If this isn't provided, or if the value is empty, then all the public IPs that the user has permission to see
+	// will be returned. Not all CEL constructs are currently supported for implementation reasons; see the filter
+	// documentation (docs/FILTER.md) for the full details.
 	Filter *string
-	Order  *string
+	// Order criteria.
+	//
+	// The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
+	// names of the attributes of the public IP instead of the names of the columns of a table. For example, in order
+	// to sort the public IPs descending by creation time the value should be:
+	//
+	//	metadata.created_at desc
+	//
+	// If the parameter isn't provided, or if the value is empty, then the order of the results is undefined.
+	Order *string
 }
 
-func (b0 HostTypesListRequest_builder) Build() *HostTypesListRequest {
-	m0 := &HostTypesListRequest{}
+func (b0 PublicIPsListRequest_builder) Build() *PublicIPsListRequest {
+	m0 := &PublicIPsListRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Offset != nil {
@@ -208,30 +233,30 @@ func (b0 HostTypesListRequest_builder) Build() *HostTypesListRequest {
 	return m0
 }
 
-type HostTypesListResponse struct {
+type PublicIPsListResponse struct {
 	state            protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Size  int32                  `protobuf:"varint,1,opt,name=size,proto3"`
 	xxx_hidden_Total int32                  `protobuf:"varint,2,opt,name=total,proto3"`
-	xxx_hidden_Items *[]*HostType           `protobuf:"bytes,3,rep,name=items,proto3"`
+	xxx_hidden_Items *[]*PublicIP           `protobuf:"bytes,3,rep,name=items,proto3"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *HostTypesListResponse) Reset() {
-	*x = HostTypesListResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[1]
+func (x *PublicIPsListResponse) Reset() {
+	*x = PublicIPsListResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesListResponse) String() string {
+func (x *PublicIPsListResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesListResponse) ProtoMessage() {}
+func (*PublicIPsListResponse) ProtoMessage() {}
 
-func (x *HostTypesListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[1]
+func (x *PublicIPsListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -242,21 +267,21 @@ func (x *HostTypesListResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesListResponse) GetSize() int32 {
+func (x *PublicIPsListResponse) GetSize() int32 {
 	if x != nil {
 		return x.xxx_hidden_Size
 	}
 	return 0
 }
 
-func (x *HostTypesListResponse) GetTotal() int32 {
+func (x *PublicIPsListResponse) GetTotal() int32 {
 	if x != nil {
 		return x.xxx_hidden_Total
 	}
 	return 0
 }
 
-func (x *HostTypesListResponse) GetItems() []*HostType {
+func (x *PublicIPsListResponse) GetItems() []*PublicIP {
 	if x != nil {
 		if x.xxx_hidden_Items != nil {
 			return *x.xxx_hidden_Items
@@ -265,28 +290,34 @@ func (x *HostTypesListResponse) GetItems() []*HostType {
 	return nil
 }
 
-func (x *HostTypesListResponse) SetSize(v int32) {
+func (x *PublicIPsListResponse) SetSize(v int32) {
 	x.xxx_hidden_Size = v
 }
 
-func (x *HostTypesListResponse) SetTotal(v int32) {
+func (x *PublicIPsListResponse) SetTotal(v int32) {
 	x.xxx_hidden_Total = v
 }
 
-func (x *HostTypesListResponse) SetItems(v []*HostType) {
+func (x *PublicIPsListResponse) SetItems(v []*PublicIP) {
 	x.xxx_hidden_Items = &v
 }
 
-type HostTypesListResponse_builder struct {
+type PublicIPsListResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Size  int32
+	// Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
+	// of the request if there are not enough items, or if the system decides that returning that number of items isn't
+	// feasible or convenient for performance reasons.
+	Size int32
+	// Total number of items of the collection that match the search criteria, regardless of the number of results
+	// requested with the `limit` parameter.
 	Total int32
-	Items []*HostType
+	// List of results.
+	Items []*PublicIP
 }
 
-func (b0 HostTypesListResponse_builder) Build() *HostTypesListResponse {
-	m0 := &HostTypesListResponse{}
+func (b0 PublicIPsListResponse_builder) Build() *PublicIPsListResponse {
+	m0 := &PublicIPsListResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Size = b.Size
@@ -295,28 +326,28 @@ func (b0 HostTypesListResponse_builder) Build() *HostTypesListResponse {
 	return m0
 }
 
-type HostTypesGetRequest struct {
+type PublicIPsGetRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id string                 `protobuf:"bytes,1,opt,name=id,proto3"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HostTypesGetRequest) Reset() {
-	*x = HostTypesGetRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[2]
+func (x *PublicIPsGetRequest) Reset() {
+	*x = PublicIPsGetRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesGetRequest) String() string {
+func (x *PublicIPsGetRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesGetRequest) ProtoMessage() {}
+func (*PublicIPsGetRequest) ProtoMessage() {}
 
-func (x *HostTypesGetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[2]
+func (x *PublicIPsGetRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -327,53 +358,53 @@ func (x *HostTypesGetRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesGetRequest) GetId() string {
+func (x *PublicIPsGetRequest) GetId() string {
 	if x != nil {
 		return x.xxx_hidden_Id
 	}
 	return ""
 }
 
-func (x *HostTypesGetRequest) SetId(v string) {
+func (x *PublicIPsGetRequest) SetId(v string) {
 	x.xxx_hidden_Id = v
 }
 
-type HostTypesGetRequest_builder struct {
+type PublicIPsGetRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id string
 }
 
-func (b0 HostTypesGetRequest_builder) Build() *HostTypesGetRequest {
-	m0 := &HostTypesGetRequest{}
+func (b0 PublicIPsGetRequest_builder) Build() *PublicIPsGetRequest {
+	m0 := &PublicIPsGetRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Id = b.Id
 	return m0
 }
 
-type HostTypesGetResponse struct {
+type PublicIPsGetResponse struct {
 	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Object *HostType              `protobuf:"bytes,1,opt,name=object,proto3"`
+	xxx_hidden_Object *PublicIP              `protobuf:"bytes,1,opt,name=object,proto3"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *HostTypesGetResponse) Reset() {
-	*x = HostTypesGetResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[3]
+func (x *PublicIPsGetResponse) Reset() {
+	*x = PublicIPsGetResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesGetResponse) String() string {
+func (x *PublicIPsGetResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesGetResponse) ProtoMessage() {}
+func (*PublicIPsGetResponse) ProtoMessage() {}
 
-func (x *HostTypesGetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[3]
+func (x *PublicIPsGetResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -384,64 +415,64 @@ func (x *HostTypesGetResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesGetResponse) GetObject() *HostType {
+func (x *PublicIPsGetResponse) GetObject() *PublicIP {
 	if x != nil {
 		return x.xxx_hidden_Object
 	}
 	return nil
 }
 
-func (x *HostTypesGetResponse) SetObject(v *HostType) {
+func (x *PublicIPsGetResponse) SetObject(v *PublicIP) {
 	x.xxx_hidden_Object = v
 }
 
-func (x *HostTypesGetResponse) HasObject() bool {
+func (x *PublicIPsGetResponse) HasObject() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Object != nil
 }
 
-func (x *HostTypesGetResponse) ClearObject() {
+func (x *PublicIPsGetResponse) ClearObject() {
 	x.xxx_hidden_Object = nil
 }
 
-type HostTypesGetResponse_builder struct {
+type PublicIPsGetResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Object *HostType
+	Object *PublicIP
 }
 
-func (b0 HostTypesGetResponse_builder) Build() *HostTypesGetResponse {
-	m0 := &HostTypesGetResponse{}
+func (b0 PublicIPsGetResponse_builder) Build() *PublicIPsGetResponse {
+	m0 := &PublicIPsGetResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Object = b.Object
 	return m0
 }
 
-type HostTypesCreateRequest struct {
+type PublicIPsCreateRequest struct {
 	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Object *HostType              `protobuf:"bytes,1,opt,name=object,proto3"`
+	xxx_hidden_Object *PublicIP              `protobuf:"bytes,1,opt,name=object,proto3"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *HostTypesCreateRequest) Reset() {
-	*x = HostTypesCreateRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[4]
+func (x *PublicIPsCreateRequest) Reset() {
+	*x = PublicIPsCreateRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesCreateRequest) String() string {
+func (x *PublicIPsCreateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesCreateRequest) ProtoMessage() {}
+func (*PublicIPsCreateRequest) ProtoMessage() {}
 
-func (x *HostTypesCreateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[4]
+func (x *PublicIPsCreateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -452,64 +483,64 @@ func (x *HostTypesCreateRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesCreateRequest) GetObject() *HostType {
+func (x *PublicIPsCreateRequest) GetObject() *PublicIP {
 	if x != nil {
 		return x.xxx_hidden_Object
 	}
 	return nil
 }
 
-func (x *HostTypesCreateRequest) SetObject(v *HostType) {
+func (x *PublicIPsCreateRequest) SetObject(v *PublicIP) {
 	x.xxx_hidden_Object = v
 }
 
-func (x *HostTypesCreateRequest) HasObject() bool {
+func (x *PublicIPsCreateRequest) HasObject() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Object != nil
 }
 
-func (x *HostTypesCreateRequest) ClearObject() {
+func (x *PublicIPsCreateRequest) ClearObject() {
 	x.xxx_hidden_Object = nil
 }
 
-type HostTypesCreateRequest_builder struct {
+type PublicIPsCreateRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Object *HostType
+	Object *PublicIP
 }
 
-func (b0 HostTypesCreateRequest_builder) Build() *HostTypesCreateRequest {
-	m0 := &HostTypesCreateRequest{}
+func (b0 PublicIPsCreateRequest_builder) Build() *PublicIPsCreateRequest {
+	m0 := &PublicIPsCreateRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Object = b.Object
 	return m0
 }
 
-type HostTypesCreateResponse struct {
+type PublicIPsCreateResponse struct {
 	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Object *HostType              `protobuf:"bytes,1,opt,name=object,proto3"`
+	xxx_hidden_Object *PublicIP              `protobuf:"bytes,1,opt,name=object,proto3"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *HostTypesCreateResponse) Reset() {
-	*x = HostTypesCreateResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[5]
+func (x *PublicIPsCreateResponse) Reset() {
+	*x = PublicIPsCreateResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesCreateResponse) String() string {
+func (x *PublicIPsCreateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesCreateResponse) ProtoMessage() {}
+func (*PublicIPsCreateResponse) ProtoMessage() {}
 
-func (x *HostTypesCreateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[5]
+func (x *PublicIPsCreateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -520,66 +551,66 @@ func (x *HostTypesCreateResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesCreateResponse) GetObject() *HostType {
+func (x *PublicIPsCreateResponse) GetObject() *PublicIP {
 	if x != nil {
 		return x.xxx_hidden_Object
 	}
 	return nil
 }
 
-func (x *HostTypesCreateResponse) SetObject(v *HostType) {
+func (x *PublicIPsCreateResponse) SetObject(v *PublicIP) {
 	x.xxx_hidden_Object = v
 }
 
-func (x *HostTypesCreateResponse) HasObject() bool {
+func (x *PublicIPsCreateResponse) HasObject() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Object != nil
 }
 
-func (x *HostTypesCreateResponse) ClearObject() {
+func (x *PublicIPsCreateResponse) ClearObject() {
 	x.xxx_hidden_Object = nil
 }
 
-type HostTypesCreateResponse_builder struct {
+type PublicIPsCreateResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Object *HostType
+	Object *PublicIP
 }
 
-func (b0 HostTypesCreateResponse_builder) Build() *HostTypesCreateResponse {
-	m0 := &HostTypesCreateResponse{}
+func (b0 PublicIPsCreateResponse_builder) Build() *PublicIPsCreateResponse {
+	m0 := &PublicIPsCreateResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Object = b.Object
 	return m0
 }
 
-type HostTypesUpdateRequest struct {
+type PublicIPsUpdateRequest struct {
 	state                 protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Object     *HostType              `protobuf:"bytes,1,opt,name=object,proto3"`
+	xxx_hidden_Object     *PublicIP              `protobuf:"bytes,1,opt,name=object,proto3"`
 	xxx_hidden_UpdateMask *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3"`
 	xxx_hidden_Lock       bool                   `protobuf:"varint,3,opt,name=lock,proto3"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *HostTypesUpdateRequest) Reset() {
-	*x = HostTypesUpdateRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[6]
+func (x *PublicIPsUpdateRequest) Reset() {
+	*x = PublicIPsUpdateRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesUpdateRequest) String() string {
+func (x *PublicIPsUpdateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesUpdateRequest) ProtoMessage() {}
+func (*PublicIPsUpdateRequest) ProtoMessage() {}
 
-func (x *HostTypesUpdateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[6]
+func (x *PublicIPsUpdateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -590,65 +621,65 @@ func (x *HostTypesUpdateRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesUpdateRequest) GetObject() *HostType {
+func (x *PublicIPsUpdateRequest) GetObject() *PublicIP {
 	if x != nil {
 		return x.xxx_hidden_Object
 	}
 	return nil
 }
 
-func (x *HostTypesUpdateRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+func (x *PublicIPsUpdateRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.xxx_hidden_UpdateMask
 	}
 	return nil
 }
 
-func (x *HostTypesUpdateRequest) GetLock() bool {
+func (x *PublicIPsUpdateRequest) GetLock() bool {
 	if x != nil {
 		return x.xxx_hidden_Lock
 	}
 	return false
 }
 
-func (x *HostTypesUpdateRequest) SetObject(v *HostType) {
+func (x *PublicIPsUpdateRequest) SetObject(v *PublicIP) {
 	x.xxx_hidden_Object = v
 }
 
-func (x *HostTypesUpdateRequest) SetUpdateMask(v *fieldmaskpb.FieldMask) {
+func (x *PublicIPsUpdateRequest) SetUpdateMask(v *fieldmaskpb.FieldMask) {
 	x.xxx_hidden_UpdateMask = v
 }
 
-func (x *HostTypesUpdateRequest) SetLock(v bool) {
+func (x *PublicIPsUpdateRequest) SetLock(v bool) {
 	x.xxx_hidden_Lock = v
 }
 
-func (x *HostTypesUpdateRequest) HasObject() bool {
+func (x *PublicIPsUpdateRequest) HasObject() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Object != nil
 }
 
-func (x *HostTypesUpdateRequest) HasUpdateMask() bool {
+func (x *PublicIPsUpdateRequest) HasUpdateMask() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_UpdateMask != nil
 }
 
-func (x *HostTypesUpdateRequest) ClearObject() {
+func (x *PublicIPsUpdateRequest) ClearObject() {
 	x.xxx_hidden_Object = nil
 }
 
-func (x *HostTypesUpdateRequest) ClearUpdateMask() {
+func (x *PublicIPsUpdateRequest) ClearUpdateMask() {
 	x.xxx_hidden_UpdateMask = nil
 }
 
-type HostTypesUpdateRequest_builder struct {
+type PublicIPsUpdateRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Object     *HostType
+	Object     *PublicIP
 	UpdateMask *fieldmaskpb.FieldMask
 	// Lock enables optimistic locking. When set to true, the server verifies that the current version of the object
 	// matches the value of the metadata.version field of the submitted object. If they differ the update will be
@@ -656,8 +687,8 @@ type HostTypesUpdateRequest_builder struct {
 	Lock bool
 }
 
-func (b0 HostTypesUpdateRequest_builder) Build() *HostTypesUpdateRequest {
-	m0 := &HostTypesUpdateRequest{}
+func (b0 PublicIPsUpdateRequest_builder) Build() *PublicIPsUpdateRequest {
+	m0 := &PublicIPsUpdateRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Object = b.Object
@@ -666,28 +697,28 @@ func (b0 HostTypesUpdateRequest_builder) Build() *HostTypesUpdateRequest {
 	return m0
 }
 
-type HostTypesUpdateResponse struct {
+type PublicIPsUpdateResponse struct {
 	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Object *HostType              `protobuf:"bytes,1,opt,name=object,proto3"`
+	xxx_hidden_Object *PublicIP              `protobuf:"bytes,1,opt,name=object,proto3"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *HostTypesUpdateResponse) Reset() {
-	*x = HostTypesUpdateResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[7]
+func (x *PublicIPsUpdateResponse) Reset() {
+	*x = PublicIPsUpdateResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesUpdateResponse) String() string {
+func (x *PublicIPsUpdateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesUpdateResponse) ProtoMessage() {}
+func (*PublicIPsUpdateResponse) ProtoMessage() {}
 
-func (x *HostTypesUpdateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[7]
+func (x *PublicIPsUpdateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -698,64 +729,64 @@ func (x *HostTypesUpdateResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesUpdateResponse) GetObject() *HostType {
+func (x *PublicIPsUpdateResponse) GetObject() *PublicIP {
 	if x != nil {
 		return x.xxx_hidden_Object
 	}
 	return nil
 }
 
-func (x *HostTypesUpdateResponse) SetObject(v *HostType) {
+func (x *PublicIPsUpdateResponse) SetObject(v *PublicIP) {
 	x.xxx_hidden_Object = v
 }
 
-func (x *HostTypesUpdateResponse) HasObject() bool {
+func (x *PublicIPsUpdateResponse) HasObject() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Object != nil
 }
 
-func (x *HostTypesUpdateResponse) ClearObject() {
+func (x *PublicIPsUpdateResponse) ClearObject() {
 	x.xxx_hidden_Object = nil
 }
 
-type HostTypesUpdateResponse_builder struct {
+type PublicIPsUpdateResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Object *HostType
+	Object *PublicIP
 }
 
-func (b0 HostTypesUpdateResponse_builder) Build() *HostTypesUpdateResponse {
-	m0 := &HostTypesUpdateResponse{}
+func (b0 PublicIPsUpdateResponse_builder) Build() *PublicIPsUpdateResponse {
+	m0 := &PublicIPsUpdateResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Object = b.Object
 	return m0
 }
 
-type HostTypesDeleteRequest struct {
+type PublicIPsDeleteRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id string                 `protobuf:"bytes,1,opt,name=id,proto3"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HostTypesDeleteRequest) Reset() {
-	*x = HostTypesDeleteRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[8]
+func (x *PublicIPsDeleteRequest) Reset() {
+	*x = PublicIPsDeleteRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesDeleteRequest) String() string {
+func (x *PublicIPsDeleteRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesDeleteRequest) ProtoMessage() {}
+func (*PublicIPsDeleteRequest) ProtoMessage() {}
 
-func (x *HostTypesDeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[8]
+func (x *PublicIPsDeleteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -766,52 +797,52 @@ func (x *HostTypesDeleteRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesDeleteRequest) GetId() string {
+func (x *PublicIPsDeleteRequest) GetId() string {
 	if x != nil {
 		return x.xxx_hidden_Id
 	}
 	return ""
 }
 
-func (x *HostTypesDeleteRequest) SetId(v string) {
+func (x *PublicIPsDeleteRequest) SetId(v string) {
 	x.xxx_hidden_Id = v
 }
 
-type HostTypesDeleteRequest_builder struct {
+type PublicIPsDeleteRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id string
 }
 
-func (b0 HostTypesDeleteRequest_builder) Build() *HostTypesDeleteRequest {
-	m0 := &HostTypesDeleteRequest{}
+func (b0 PublicIPsDeleteRequest_builder) Build() *PublicIPsDeleteRequest {
+	m0 := &PublicIPsDeleteRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Id = b.Id
 	return m0
 }
 
-type HostTypesDeleteResponse struct {
+type PublicIPsDeleteResponse struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HostTypesDeleteResponse) Reset() {
-	*x = HostTypesDeleteResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[9]
+func (x *PublicIPsDeleteResponse) Reset() {
+	*x = PublicIPsDeleteResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesDeleteResponse) String() string {
+func (x *PublicIPsDeleteResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesDeleteResponse) ProtoMessage() {}
+func (*PublicIPsDeleteResponse) ProtoMessage() {}
 
-func (x *HostTypesDeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[9]
+func (x *PublicIPsDeleteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -822,40 +853,40 @@ func (x *HostTypesDeleteResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type HostTypesDeleteResponse_builder struct {
+type PublicIPsDeleteResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 }
 
-func (b0 HostTypesDeleteResponse_builder) Build() *HostTypesDeleteResponse {
-	m0 := &HostTypesDeleteResponse{}
+func (b0 PublicIPsDeleteResponse_builder) Build() *PublicIPsDeleteResponse {
+	m0 := &PublicIPsDeleteResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	return m0
 }
 
-type HostTypesSignalRequest struct {
+type PublicIPsSignalRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id string                 `protobuf:"bytes,1,opt,name=id,proto3"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HostTypesSignalRequest) Reset() {
-	*x = HostTypesSignalRequest{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[10]
+func (x *PublicIPsSignalRequest) Reset() {
+	*x = PublicIPsSignalRequest{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesSignalRequest) String() string {
+func (x *PublicIPsSignalRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesSignalRequest) ProtoMessage() {}
+func (*PublicIPsSignalRequest) ProtoMessage() {}
 
-func (x *HostTypesSignalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[10]
+func (x *PublicIPsSignalRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -866,52 +897,52 @@ func (x *HostTypesSignalRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *HostTypesSignalRequest) GetId() string {
+func (x *PublicIPsSignalRequest) GetId() string {
 	if x != nil {
 		return x.xxx_hidden_Id
 	}
 	return ""
 }
 
-func (x *HostTypesSignalRequest) SetId(v string) {
+func (x *PublicIPsSignalRequest) SetId(v string) {
 	x.xxx_hidden_Id = v
 }
 
-type HostTypesSignalRequest_builder struct {
+type PublicIPsSignalRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id string
 }
 
-func (b0 HostTypesSignalRequest_builder) Build() *HostTypesSignalRequest {
-	m0 := &HostTypesSignalRequest{}
+func (b0 PublicIPsSignalRequest_builder) Build() *PublicIPsSignalRequest {
+	m0 := &PublicIPsSignalRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Id = b.Id
 	return m0
 }
 
-type HostTypesSignalResponse struct {
+type PublicIPsSignalResponse struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HostTypesSignalResponse) Reset() {
-	*x = HostTypesSignalResponse{}
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[11]
+func (x *PublicIPsSignalResponse) Reset() {
+	*x = PublicIPsSignalResponse{}
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HostTypesSignalResponse) String() string {
+func (x *PublicIPsSignalResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HostTypesSignalResponse) ProtoMessage() {}
+func (*PublicIPsSignalResponse) ProtoMessage() {}
 
-func (x *HostTypesSignalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_osac_private_v1_host_types_service_proto_msgTypes[11]
+func (x *PublicIPsSignalResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_osac_private_v1_public_ips_service_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -922,32 +953,32 @@ func (x *HostTypesSignalResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type HostTypesSignalResponse_builder struct {
+type PublicIPsSignalResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 }
 
-func (b0 HostTypesSignalResponse_builder) Build() *HostTypesSignalResponse {
-	m0 := &HostTypesSignalResponse{}
+func (b0 PublicIPsSignalResponse_builder) Build() *PublicIPsSignalResponse {
+	m0 := &PublicIPsSignalResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	return m0
 }
 
-var File_osac_private_v1_host_types_service_proto protoreflect.FileDescriptor
+var File_osac_private_v1_public_ips_service_proto protoreflect.FileDescriptor
 
-var file_osac_private_v1_host_types_service_proto_rawDesc = string([]byte{
+var file_osac_private_v1_public_ips_service_proto_rawDesc = string([]byte{
 	0x0a, 0x28, 0x6f, 0x73, 0x61, 0x63, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76,
-	0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x5f, 0x73, 0x65, 0x72,
+	0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x69, 0x70, 0x73, 0x5f, 0x73, 0x65, 0x72,
 	0x76, 0x69, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x6f, 0x73, 0x61, 0x63,
 	0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x1a, 0x1c, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69,
 	0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64,
 	0x5f, 0x6d, 0x61, 0x73, 0x6b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x24, 0x6f, 0x73, 0x61,
-	0x63, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73,
-	0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0xb0, 0x01, 0x0a, 0x14, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x4c,
+	0x63, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x75, 0x62,
+	0x6c, 0x69, 0x63, 0x5f, 0x69, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x22, 0xb0, 0x01, 0x0a, 0x14, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x4c,
 	0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x06, 0x6f, 0x66,
 	0x66, 0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x06, 0x6f, 0x66,
 	0x66, 0x73, 0x65, 0x74, 0x88, 0x01, 0x01, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
@@ -958,107 +989,107 @@ var file_osac_private_v1_host_types_service_proto_rawDesc = string([]byte{
 	0x52, 0x05, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x88, 0x01, 0x01, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f,
 	0x66, 0x66, 0x73, 0x65, 0x74, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x42,
 	0x09, 0x0a, 0x07, 0x5f, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x22, 0x72, 0x0a, 0x15, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x72, 0x64, 0x65, 0x72, 0x22, 0x72, 0x0a, 0x15, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50,
 	0x73, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a,
 	0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a,
 	0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05,
 	0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x2f, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73,
 	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72,
-	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70,
-	0x65, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x22, 0x25, 0x0a, 0x13, 0x48, 0x6f, 0x73, 0x74,
-	0x54, 0x79, 0x70, 0x65, 0x73, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49,
+	0x50, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x22, 0x25, 0x0a, 0x13, 0x50, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x49, 0x50, 0x73, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x49, 0x0a, 0x14, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x47, 0x65, 0x74, 0x52,
+	0x49, 0x0a, 0x14, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x47, 0x65, 0x74, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63,
 	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70,
-	0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79,
-	0x70, 0x65, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x4b, 0x0a, 0x16, 0x48, 0x6f,
-	0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x49, 0x50, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x4b, 0x0a, 0x16, 0x50, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x12, 0x31, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76,
-	0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52,
-	0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x4c, 0x0a, 0x17, 0x48, 0x6f, 0x73, 0x74, 0x54,
-	0x79, 0x70, 0x65, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x52,
+	0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x4c, 0x0a, 0x17, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x49, 0x50, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
 	0x73, 0x65, 0x12, 0x31, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74,
-	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x6f,
-	0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x9c, 0x01, 0x0a, 0x16, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79,
-	0x70, 0x65, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x52, 0x06, 0x6f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x9c, 0x01, 0x0a, 0x16, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x49, 0x50, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x12, 0x31, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e,
-	0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x6f, 0x62, 0x6a,
+	0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x52, 0x06, 0x6f, 0x62, 0x6a,
 	0x65, 0x63, 0x74, 0x12, 0x3b, 0x0a, 0x0b, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61,
 	0x73, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64,
 	0x4d, 0x61, 0x73, 0x6b, 0x52, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x73, 0x6b,
 	0x12, 0x12, 0x0a, 0x04, 0x6c, 0x6f, 0x63, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x04,
-	0x6c, 0x6f, 0x63, 0x6b, 0x22, 0x4c, 0x0a, 0x17, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x6c, 0x6f, 0x63, 0x6b, 0x22, 0x4c, 0x0a, 0x17, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50,
 	0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x31, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x19, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76,
-	0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65,
-	0x63, 0x74, 0x22, 0x28, 0x0a, 0x16, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x44,
+	0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x22, 0x28, 0x0a, 0x16, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x44,
 	0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02,
 	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x19, 0x0a, 0x17,
-	0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x0a, 0x16, 0x48, 0x6f, 0x73, 0x74, 0x54,
-	0x79, 0x70, 0x65, 0x73, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x0a, 0x16, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x49, 0x50, 0x73, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
-	0x64, 0x22, 0x19, 0x0a, 0x17, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x53, 0x69,
+	0x64, 0x22, 0x19, 0x0a, 0x17, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x53, 0x69,
 	0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa2, 0x06, 0x0a,
-	0x09, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x12, 0x79, 0x0a, 0x04, 0x4c, 0x69,
+	0x09, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x12, 0x79, 0x0a, 0x04, 0x4c, 0x69,
 	0x73, 0x74, 0x12, 0x25, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74,
-	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x4c, 0x69,
+	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x4c, 0x69,
 	0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x6f, 0x73, 0x61, 0x63,
-	0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74,
-	0x54, 0x79, 0x70, 0x65, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x49, 0x50, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x22, 0x22, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1c, 0x12, 0x1a, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74, 0x5f,
-	0x74, 0x79, 0x70, 0x65, 0x73, 0x12, 0x83, 0x01, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x24, 0x2e,
+	0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x5f, 0x69, 0x70, 0x73, 0x12, 0x83, 0x01, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x24, 0x2e,
 	0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e,
-	0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61,
-	0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x47,
+	0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x47,
 	0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93,
 	0x02, 0x29, 0x62, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x1f, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74,
-	0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x8f, 0x01, 0x0a, 0x06,
+	0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x5f, 0x69, 0x70, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x8f, 0x01, 0x0a, 0x06,
 	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x27, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72,
-	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70,
-	0x65, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49,
+	0x50, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
 	0x28, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76,
-	0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x43, 0x72, 0x65, 0x61, 0x74,
 	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x82, 0xd3, 0xe4, 0x93, 0x02,
 	0x2c, 0x3a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x62, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63,
 	0x74, 0x22, 0x1a, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f,
-	0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x12, 0x9b, 0x01,
+	0x76, 0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x69, 0x70, 0x73, 0x12, 0x9b, 0x01,
 	0x0a, 0x06, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x27, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e,
-	0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54,
-	0x79, 0x70, 0x65, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x49, 0x50, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x1a, 0x28, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65,
-	0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x55, 0x70, 0x64,
+	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x55, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3e, 0x82, 0xd3, 0xe4,
 	0x93, 0x02, 0x38, 0x3a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x62, 0x06, 0x6f, 0x62, 0x6a,
 	0x65, 0x63, 0x74, 0x32, 0x26, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74,
-	0x65, 0x2f, 0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f,
+	0x65, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x69, 0x70, 0x73, 0x2f,
 	0x7b, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2e, 0x69, 0x64, 0x7d, 0x12, 0x84, 0x01, 0x0a, 0x06,
 	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x27, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72,
-	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70,
-	0x65, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49,
+	0x50, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
 	0x28, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76,
-	0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x44, 0x65, 0x6c, 0x65, 0x74,
 	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x27, 0x82, 0xd3, 0xe4, 0x93, 0x02,
 	0x21, 0x2a, 0x1f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2f,
-	0x76, 0x31, 0x2f, 0x68, 0x6f, 0x73, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x7b, 0x69,
+	0x76, 0x31, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x69, 0x70, 0x73, 0x2f, 0x7b, 0x69,
 	0x64, 0x7d, 0x12, 0x5d, 0x0a, 0x06, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x12, 0x27, 0x2e, 0x6f,
-	0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48,
-	0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65, 0x73, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65,
+	0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50, 0x73, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70, 0x72, 0x69,
-	0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x48, 0x6f, 0x73, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x50,
 	0x73, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
 	0x00, 0x42, 0xda, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x6f, 0x73, 0x61, 0x63, 0x2e, 0x70,
-	0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x42, 0x15, 0x48, 0x6f, 0x73, 0x74, 0x54,
-	0x79, 0x70, 0x65, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f,
+	0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x2e, 0x76, 0x31, 0x42, 0x15, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x49, 0x70, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f,
 	0x50, 0x01, 0x5a, 0x4c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f,
 	0x73, 0x61, 0x63, 0x2d, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x2f, 0x6f, 0x73, 0x61, 0x63,
 	0x2d, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e,
@@ -1073,43 +1104,43 @@ var file_osac_private_v1_host_types_service_proto_rawDesc = string([]byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
-var file_osac_private_v1_host_types_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
-var file_osac_private_v1_host_types_service_proto_goTypes = []any{
-	(*HostTypesListRequest)(nil),    // 0: osac.private.v1.HostTypesListRequest
-	(*HostTypesListResponse)(nil),   // 1: osac.private.v1.HostTypesListResponse
-	(*HostTypesGetRequest)(nil),     // 2: osac.private.v1.HostTypesGetRequest
-	(*HostTypesGetResponse)(nil),    // 3: osac.private.v1.HostTypesGetResponse
-	(*HostTypesCreateRequest)(nil),  // 4: osac.private.v1.HostTypesCreateRequest
-	(*HostTypesCreateResponse)(nil), // 5: osac.private.v1.HostTypesCreateResponse
-	(*HostTypesUpdateRequest)(nil),  // 6: osac.private.v1.HostTypesUpdateRequest
-	(*HostTypesUpdateResponse)(nil), // 7: osac.private.v1.HostTypesUpdateResponse
-	(*HostTypesDeleteRequest)(nil),  // 8: osac.private.v1.HostTypesDeleteRequest
-	(*HostTypesDeleteResponse)(nil), // 9: osac.private.v1.HostTypesDeleteResponse
-	(*HostTypesSignalRequest)(nil),  // 10: osac.private.v1.HostTypesSignalRequest
-	(*HostTypesSignalResponse)(nil), // 11: osac.private.v1.HostTypesSignalResponse
-	(*HostType)(nil),                // 12: osac.private.v1.HostType
+var file_osac_private_v1_public_ips_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_osac_private_v1_public_ips_service_proto_goTypes = []any{
+	(*PublicIPsListRequest)(nil),    // 0: osac.private.v1.PublicIPsListRequest
+	(*PublicIPsListResponse)(nil),   // 1: osac.private.v1.PublicIPsListResponse
+	(*PublicIPsGetRequest)(nil),     // 2: osac.private.v1.PublicIPsGetRequest
+	(*PublicIPsGetResponse)(nil),    // 3: osac.private.v1.PublicIPsGetResponse
+	(*PublicIPsCreateRequest)(nil),  // 4: osac.private.v1.PublicIPsCreateRequest
+	(*PublicIPsCreateResponse)(nil), // 5: osac.private.v1.PublicIPsCreateResponse
+	(*PublicIPsUpdateRequest)(nil),  // 6: osac.private.v1.PublicIPsUpdateRequest
+	(*PublicIPsUpdateResponse)(nil), // 7: osac.private.v1.PublicIPsUpdateResponse
+	(*PublicIPsDeleteRequest)(nil),  // 8: osac.private.v1.PublicIPsDeleteRequest
+	(*PublicIPsDeleteResponse)(nil), // 9: osac.private.v1.PublicIPsDeleteResponse
+	(*PublicIPsSignalRequest)(nil),  // 10: osac.private.v1.PublicIPsSignalRequest
+	(*PublicIPsSignalResponse)(nil), // 11: osac.private.v1.PublicIPsSignalResponse
+	(*PublicIP)(nil),                // 12: osac.private.v1.PublicIP
 	(*fieldmaskpb.FieldMask)(nil),   // 13: google.protobuf.FieldMask
 }
-var file_osac_private_v1_host_types_service_proto_depIdxs = []int32{
-	12, // 0: osac.private.v1.HostTypesListResponse.items:type_name -> osac.private.v1.HostType
-	12, // 1: osac.private.v1.HostTypesGetResponse.object:type_name -> osac.private.v1.HostType
-	12, // 2: osac.private.v1.HostTypesCreateRequest.object:type_name -> osac.private.v1.HostType
-	12, // 3: osac.private.v1.HostTypesCreateResponse.object:type_name -> osac.private.v1.HostType
-	12, // 4: osac.private.v1.HostTypesUpdateRequest.object:type_name -> osac.private.v1.HostType
-	13, // 5: osac.private.v1.HostTypesUpdateRequest.update_mask:type_name -> google.protobuf.FieldMask
-	12, // 6: osac.private.v1.HostTypesUpdateResponse.object:type_name -> osac.private.v1.HostType
-	0,  // 7: osac.private.v1.HostTypes.List:input_type -> osac.private.v1.HostTypesListRequest
-	2,  // 8: osac.private.v1.HostTypes.Get:input_type -> osac.private.v1.HostTypesGetRequest
-	4,  // 9: osac.private.v1.HostTypes.Create:input_type -> osac.private.v1.HostTypesCreateRequest
-	6,  // 10: osac.private.v1.HostTypes.Update:input_type -> osac.private.v1.HostTypesUpdateRequest
-	8,  // 11: osac.private.v1.HostTypes.Delete:input_type -> osac.private.v1.HostTypesDeleteRequest
-	10, // 12: osac.private.v1.HostTypes.Signal:input_type -> osac.private.v1.HostTypesSignalRequest
-	1,  // 13: osac.private.v1.HostTypes.List:output_type -> osac.private.v1.HostTypesListResponse
-	3,  // 14: osac.private.v1.HostTypes.Get:output_type -> osac.private.v1.HostTypesGetResponse
-	5,  // 15: osac.private.v1.HostTypes.Create:output_type -> osac.private.v1.HostTypesCreateResponse
-	7,  // 16: osac.private.v1.HostTypes.Update:output_type -> osac.private.v1.HostTypesUpdateResponse
-	9,  // 17: osac.private.v1.HostTypes.Delete:output_type -> osac.private.v1.HostTypesDeleteResponse
-	11, // 18: osac.private.v1.HostTypes.Signal:output_type -> osac.private.v1.HostTypesSignalResponse
+var file_osac_private_v1_public_ips_service_proto_depIdxs = []int32{
+	12, // 0: osac.private.v1.PublicIPsListResponse.items:type_name -> osac.private.v1.PublicIP
+	12, // 1: osac.private.v1.PublicIPsGetResponse.object:type_name -> osac.private.v1.PublicIP
+	12, // 2: osac.private.v1.PublicIPsCreateRequest.object:type_name -> osac.private.v1.PublicIP
+	12, // 3: osac.private.v1.PublicIPsCreateResponse.object:type_name -> osac.private.v1.PublicIP
+	12, // 4: osac.private.v1.PublicIPsUpdateRequest.object:type_name -> osac.private.v1.PublicIP
+	13, // 5: osac.private.v1.PublicIPsUpdateRequest.update_mask:type_name -> google.protobuf.FieldMask
+	12, // 6: osac.private.v1.PublicIPsUpdateResponse.object:type_name -> osac.private.v1.PublicIP
+	0,  // 7: osac.private.v1.PublicIPs.List:input_type -> osac.private.v1.PublicIPsListRequest
+	2,  // 8: osac.private.v1.PublicIPs.Get:input_type -> osac.private.v1.PublicIPsGetRequest
+	4,  // 9: osac.private.v1.PublicIPs.Create:input_type -> osac.private.v1.PublicIPsCreateRequest
+	6,  // 10: osac.private.v1.PublicIPs.Update:input_type -> osac.private.v1.PublicIPsUpdateRequest
+	8,  // 11: osac.private.v1.PublicIPs.Delete:input_type -> osac.private.v1.PublicIPsDeleteRequest
+	10, // 12: osac.private.v1.PublicIPs.Signal:input_type -> osac.private.v1.PublicIPsSignalRequest
+	1,  // 13: osac.private.v1.PublicIPs.List:output_type -> osac.private.v1.PublicIPsListResponse
+	3,  // 14: osac.private.v1.PublicIPs.Get:output_type -> osac.private.v1.PublicIPsGetResponse
+	5,  // 15: osac.private.v1.PublicIPs.Create:output_type -> osac.private.v1.PublicIPsCreateResponse
+	7,  // 16: osac.private.v1.PublicIPs.Update:output_type -> osac.private.v1.PublicIPsUpdateResponse
+	9,  // 17: osac.private.v1.PublicIPs.Delete:output_type -> osac.private.v1.PublicIPsDeleteResponse
+	11, // 18: osac.private.v1.PublicIPs.Signal:output_type -> osac.private.v1.PublicIPsSignalResponse
 	13, // [13:19] is the sub-list for method output_type
 	7,  // [7:13] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name
@@ -1117,28 +1148,28 @@ var file_osac_private_v1_host_types_service_proto_depIdxs = []int32{
 	0,  // [0:7] is the sub-list for field type_name
 }
 
-func init() { file_osac_private_v1_host_types_service_proto_init() }
-func file_osac_private_v1_host_types_service_proto_init() {
-	if File_osac_private_v1_host_types_service_proto != nil {
+func init() { file_osac_private_v1_public_ips_service_proto_init() }
+func file_osac_private_v1_public_ips_service_proto_init() {
+	if File_osac_private_v1_public_ips_service_proto != nil {
 		return
 	}
-	file_osac_private_v1_host_type_type_proto_init()
-	file_osac_private_v1_host_types_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_osac_private_v1_public_ip_type_proto_init()
+	file_osac_private_v1_public_ips_service_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_osac_private_v1_host_types_service_proto_rawDesc), len(file_osac_private_v1_host_types_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_osac_private_v1_public_ips_service_proto_rawDesc), len(file_osac_private_v1_public_ips_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_osac_private_v1_host_types_service_proto_goTypes,
-		DependencyIndexes: file_osac_private_v1_host_types_service_proto_depIdxs,
-		MessageInfos:      file_osac_private_v1_host_types_service_proto_msgTypes,
+		GoTypes:           file_osac_private_v1_public_ips_service_proto_goTypes,
+		DependencyIndexes: file_osac_private_v1_public_ips_service_proto_depIdxs,
+		MessageInfos:      file_osac_private_v1_public_ips_service_proto_msgTypes,
 	}.Build()
-	File_osac_private_v1_host_types_service_proto = out.File
-	file_osac_private_v1_host_types_service_proto_goTypes = nil
-	file_osac_private_v1_host_types_service_proto_depIdxs = nil
+	File_osac_private_v1_public_ips_service_proto = out.File
+	file_osac_private_v1_public_ips_service_proto_goTypes = nil
+	file_osac_private_v1_public_ips_service_proto_depIdxs = nil
 }
