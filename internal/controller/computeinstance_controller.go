@@ -321,8 +321,8 @@ func (r *ComputeInstanceReconciler) mapTenantToComputeInstances(ctx context.Cont
 }
 
 // handleProvisioning manages the provisioning job lifecycle for a ComputeInstance.
-// It triggers provisioning if needed and polls job status until completion.
-// Status updates are handled by the main reconcile loop.
+// Uses shared RunProvisioningLifecycle with statusFlush to prevent duplicate jobs
+// from concurrent reconciliations.
 func (r *ComputeInstanceReconciler) handleProvisioning(ctx context.Context, instance *v1alpha1.ComputeInstance) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
 
@@ -339,24 +339,10 @@ func (r *ComputeInstanceReconciler) handleProvisioning(ctx context.Context, inst
 		return ctrl.Result{}, nil
 	}
 
-	provState := r.provisionState(instance)
-	action, latestProvisionJob := r.shouldTriggerProvision(ctx, instance)
-	trigger := func() (ctrl.Result, error) {
-		return provisioning.TriggerJob(ctx, r.ProvisioningProvider, instance, provState, r.MaxJobHistory, r.StatusPollInterval)
-	}
-
-	switch action {
-	case provisioning.Skip:
-		return ctrl.Result{}, nil
-	case provisioning.Trigger:
-		return trigger()
-	case provisioning.Requeue:
-		// Use RequeueAfter (not Requeue: true) to avoid hammering the API server
-		return ctrl.Result{RequeueAfter: r.StatusPollInterval}, nil
-	case provisioning.Backoff:
-		return provisioning.HandleBackoff(ctx, provState, latestProvisionJob, trigger)
-	default: // provisioning.Poll
-		return provisioning.PollJob(ctx, r.ProvisioningProvider, instance, provState, latestProvisionJob, r.StatusPollInterval, &provisioning.PollCallbacks{
+	return provisioning.RunProvisioningLifecycle(ctx, r.ProvisioningProvider, instance,
+		r.provisionState(instance),
+		r.MaxJobHistory, r.StatusPollInterval,
+		&provisioning.PollCallbacks{
 			OnFailed: func(_ string) {
 				// Only set Failed phase if no VM exists yet (first-time provisioning failure).
 				// If the VM already exists (re-provisioning failure), the phase is driven by KubeVirt
@@ -368,10 +354,17 @@ func (r *ComputeInstanceReconciler) handleProvisioning(ctx context.Context, inst
 			IsCompleted: func() bool {
 				// EDA's GetProvisionStatus always returns Unknown.
 				// Detect completion by checking if the VM was created on the cluster.
-				return provisioning.IsEDAJobID(latestProvisionJob.JobID) && instance.Status.VirtualMachineReference != nil
+				latestJob := provisioning.FindLatestJobByType(instance.Status.Jobs, v1alpha1.JobTypeProvision)
+				return latestJob != nil && provisioning.IsEDAJobID(latestJob.JobID) && instance.Status.VirtualMachineReference != nil
 			},
-		})
-	}
+		},
+		func() bool {
+			return provisioning.CheckAPIServerForNonTerminalProvisionJob(ctx, r.mgr.GetLocalManager().GetAPIReader(), client.ObjectKeyFromObject(instance), &v1alpha1.ComputeInstance{})
+		},
+		func() error {
+			return r.updateStatusWithRetry(ctx, client.ObjectKeyFromObject(instance), instance.Status)
+		},
+	)
 }
 
 // handleDeprovisioning manages the deprovisioning job lifecycle for a ComputeInstance.
@@ -955,22 +948,11 @@ func determinePhaseFromPrintableStatus(ctx context.Context, kv *kubevirtv1.Virtu
 	}
 }
 
-// shouldTriggerProvision determines the next provisioning action.
-// Returns provisioning.Poll with the in-progress job when one is already running.
-// Returns provisioning.Skip when config versions match (no change needed).
-// Returns provisioning.Requeue when the API server has a non-terminal job that the cache missed (stale cache).
-// Returns provisioning.Trigger when provisioning is needed and no in-flight job exists.
 func (r *ComputeInstanceReconciler) provisionState(instance *v1alpha1.ComputeInstance) *provisioning.State {
 	return &provisioning.State{
 		Jobs:                 &instance.Status.Jobs,
 		DesiredConfigVersion: instance.Status.DesiredConfigVersion,
 	}
-}
-
-func (r *ComputeInstanceReconciler) shouldTriggerProvision(ctx context.Context, instance *v1alpha1.ComputeInstance) (provisioning.Action, *v1alpha1.JobStatus) {
-	return provisioning.EvaluateAction(r.provisionState(instance), func() bool {
-		return provisioning.CheckAPIServerForNonTerminalProvisionJob(ctx, r.mgr.GetLocalManager().GetAPIReader(), client.ObjectKeyFromObject(instance), &v1alpha1.ComputeInstance{})
-	})
 }
 
 // handleDesiredConfigVersion sets status.desiredConfigVersion to the hash of spec.
