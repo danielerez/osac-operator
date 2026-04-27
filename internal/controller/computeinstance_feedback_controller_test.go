@@ -838,7 +838,7 @@ var _ = Describe("ComputeInstanceFeedbackReconciler", func() {
 
 			found := false
 			for _, cond := range mockClient.lastUpdate.GetStatus().GetConditions() {
-				if cond.GetType() == privatev1.ComputeInstanceConditionType_COMPUTE_INSTANCE_CONDITION_TYPE_READY {
+				if cond.GetType() == privatev1.ComputeInstanceConditionType_COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE {
 					Expect(cond.GetStatus()).To(Equal(privatev1.ConditionStatus_CONDITION_STATUS_TRUE))
 					Expect(cond.GetReason()).To(Equal(osacv1alpha1.ReasonAsExpected))
 					found = true
