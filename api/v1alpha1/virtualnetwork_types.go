@@ -132,6 +132,3 @@ func (v *VirtualNetwork) GetName() string {
 	return v.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&VirtualNetwork{}, &VirtualNetworkList{})
-}

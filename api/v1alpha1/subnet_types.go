@@ -139,6 +139,3 @@ func (s *Subnet) GetName() string {
 	return s.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&Subnet{}, &SubnetList{})
-}

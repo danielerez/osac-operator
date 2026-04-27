@@ -144,6 +144,3 @@ func (p *PublicIP) GetName() string {
 	return p.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&PublicIP{}, &PublicIPList{})
-}

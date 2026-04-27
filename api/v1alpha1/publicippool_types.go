@@ -132,6 +132,3 @@ func (p *PublicIPPool) GetName() string {
 	return p.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&PublicIPPool{}, &PublicIPPoolList{})
-}

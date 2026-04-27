@@ -298,6 +298,3 @@ func (ci *ComputeInstance) GetName() string {
 	return ci.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&ComputeInstance{}, &ComputeInstanceList{})
-}

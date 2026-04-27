@@ -167,6 +167,3 @@ func (s *SecurityGroup) GetName() string {
 	return s.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&SecurityGroup{}, &SecurityGroupList{})
-}

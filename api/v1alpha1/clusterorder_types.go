@@ -190,6 +190,3 @@ func (co *ClusterOrder) GetName() string {
 	return co.ObjectMeta.Name
 }
 
-func init() {
-	SchemeBuilder.Register(&ClusterOrder{}, &ClusterOrderList{})
-}
