@@ -1280,7 +1280,7 @@ var _ = Describe("ComputeInstance Controller", func() {
 			_, err := controllerReconciler.Reconcile(ctx, mcreconcile.Request{Request: reconcile.Request{NamespacedName: nn}})
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(fakeRecorder.Events).Should(Receive(And(
-				ContainSubstring("Warning"),
+				ContainSubstring("Normal"),
 				ContainSubstring(eventReasonTenantNotReady),
 			)))
 

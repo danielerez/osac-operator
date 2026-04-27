@@ -644,7 +644,7 @@ func (r *ComputeInstanceReconciler) handleUpdate(ctx context.Context, _ reconcil
 		oldReason := conditionReason(instance, v1alpha1.ComputeInstanceConditionProvisioned)
 		instance.SetStatusCondition(v1alpha1.ComputeInstanceConditionProvisioned, metav1.ConditionFalse, msg, v1alpha1.ReasonTenantNotReady)
 		if oldReason != v1alpha1.ReasonTenantNotReady {
-			r.Recorder.Eventf(instance, nil, corev1.EventTypeWarning, eventReasonTenantNotReady, eventActionReconcile, "%s", msg)
+			r.Recorder.Eventf(instance, nil, corev1.EventTypeNormal, eventReasonTenantNotReady, eventActionReconcile, "%s", msg)
 		}
 		log.Info("tenant is not ready, requeueing", "tenant", tenant.GetName())
 		return ctrl.Result{RequeueAfter: defaultPreconditionRequeueInterval}, nil
