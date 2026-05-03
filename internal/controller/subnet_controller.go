@@ -309,7 +309,7 @@ func (r *SubnetReconciler) handleDeprovisioning(ctx context.Context, subnet *v1a
 				Type:                   v1alpha1.JobTypeDeprovision,
 				Timestamp:              metav1.NewTime(time.Now().UTC()),
 				State:                  v1alpha1.JobStatePending,
-				Message:                "Deprovisioning job triggered",
+				Message:                deprovisioningJobTriggeredMessage,
 				BlockDeletionOnFailure: result.BlockDeletionOnFailure,
 			}
 			subnet.Status.Jobs = provisioning.AppendJob(subnet.Status.Jobs, newJob, r.MaxJobHistory)

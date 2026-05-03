@@ -41,4 +41,6 @@ const (
 	// defaultPublicIPPoolImplementationStrategy is the fallback strategy when none is specified.
 	// Used by PublicIPPool (from its own spec) and PublicIP (inherited from parent pool).
 	defaultPublicIPPoolImplementationStrategy = "metallb-l2"
+
+	deprovisioningJobTriggeredMessage = "Deprovisioning job triggered"
 )

@@ -270,7 +270,7 @@ func (r *VirtualNetworkReconciler) handleDeprovisioning(ctx context.Context, vne
 				Type:                   v1alpha1.JobTypeDeprovision,
 				Timestamp:              metav1.NewTime(time.Now().UTC()),
 				State:                  v1alpha1.JobStatePending,
-				Message:                "Deprovisioning job triggered",
+				Message:                deprovisioningJobTriggeredMessage,
 				BlockDeletionOnFailure: result.BlockDeletionOnFailure,
 			}
 			vnet.Status.Jobs = provisioning.AppendJob(vnet.Status.Jobs, newJob, r.MaxJobHistory)

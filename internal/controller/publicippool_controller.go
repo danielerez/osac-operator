@@ -286,7 +286,7 @@ func (r *PublicIPPoolReconciler) handleDeprovisioning(ctx context.Context, pool 
 				Type:                   v1alpha1.JobTypeDeprovision,
 				Timestamp:              metav1.NewTime(time.Now().UTC()),
 				State:                  v1alpha1.JobStatePending,
-				Message:                "Deprovisioning job triggered",
+				Message:                deprovisioningJobTriggeredMessage,
 				BlockDeletionOnFailure: result.BlockDeletionOnFailure,
 			}
 			pool.Status.Jobs = provisioning.AppendJob(pool.Status.Jobs, newJob, r.MaxJobHistory)

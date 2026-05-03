@@ -289,7 +289,7 @@ func (r *SecurityGroupReconciler) handleDeprovisioning(ctx context.Context, sg *
 				Type:                   v1alpha1.JobTypeDeprovision,
 				Timestamp:              metav1.NewTime(time.Now().UTC()),
 				State:                  v1alpha1.JobStatePending,
-				Message:                "Deprovisioning job triggered",
+				Message:                deprovisioningJobTriggeredMessage,
 				BlockDeletionOnFailure: result.BlockDeletionOnFailure,
 			}
 			sg.Status.Jobs = provisioning.AppendJob(sg.Status.Jobs, newJob, r.MaxJobHistory)
