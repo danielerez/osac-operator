@@ -57,9 +57,9 @@ Each resource has a **resource controller** (provisions via AAP/EDA, manages fin
 
 ### Provisioning Providers
 
-Two backends via `ProvisioningProvider` interface (`internal/provisioning/provider.go`):
-- **AAP** (`internal/aap/client.go`) — direct AAP REST API integration
-- **EDA** (`internal/provisioning/eda_provider.go`) — webhook-based triggers
+Two backends via `ProvisioningProvider` interface (`pkg/provisioning/provider.go`):
+- **AAP** (`pkg/aap/client.go`) — direct AAP REST API integration
+- **EDA** (`pkg/provisioning/eda_provider.go`) — webhook-based triggers
 
 Selected via `OSAC_PROVISIONING_PROVIDER` env var (default: `aap`).
 
@@ -76,14 +76,15 @@ Consumes private fulfillment-service API. Generated from Buf Schema Registry mod
 ```text
 api/v1alpha1/              # CRD type definitions
 cmd/main.go                # Operator entry point
+pkg/
+  aap/                     # AAP REST API client (public package)
+  provisioning/            # ProvisioningProvider abstraction
 internal/
-  aap/                     # AAP REST API client
   api/                     # Generated gRPC client (DO NOT EDIT)
   controller/              # Reconciliation logic
     {resource}_controller.go           # Provisioning controller
     {resource}_feedback_controller.go  # Feedback controller
   helpers/                 # Utility functions
-  provisioning/            # ProvisioningProvider abstraction
 config/
   crd/                     # Generated CRD manifests (DO NOT EDIT)
   rbac/                    # Generated RBAC rules

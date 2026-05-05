@@ -10,8 +10,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/osac-project/osac-operator/api/v1alpha1"
-	"github.com/osac-project/osac-operator/internal/provisioning"
 	"github.com/osac-project/osac-operator/internal/webhook"
+	"github.com/osac-project/osac-operator/pkg/provisioning"
 )
 
 // mockWebhookClient is a test double for WebhookClient
