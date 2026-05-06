@@ -23,6 +23,10 @@ const (
 	eventReasonAttached     = "Attached"
 	eventReasonDetached     = "Detached"
 	eventReasonAutoDetached = "AutoDetached"
+
+	// Must match the AAP playbook naming convention (osac-aap PR #278).
+	publicIPServiceNamePrefix = "osac-pip-"
+	defaultMetalLBNamespace   = "metallb-system"
 )
 
 var (

@@ -1262,8 +1262,8 @@ var _ = Describe("PublicIPReconciler", func() {
 		It("should return IP from LoadBalancer Service ingress", func() {
 			svc := &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "osac-publicip-test-publicip",
-					Namespace: "metallb-system",
+					Name:      publicIPServiceNamePrefix + "test-publicip",
+					Namespace: defaultMetalLBNamespace,
 				},
 				Status: corev1.ServiceStatus{
 					LoadBalancer: corev1.LoadBalancerStatus{
@@ -1289,8 +1289,8 @@ var _ = Describe("PublicIPReconciler", func() {
 		It("should return empty string when ingress list is empty", func() {
 			svc := &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "osac-publicip-test-publicip",
-					Namespace: "metallb-system",
+					Name:      publicIPServiceNamePrefix + "test-publicip",
+					Namespace: defaultMetalLBNamespace,
 				},
 				Status: corev1.ServiceStatus{
 					LoadBalancer: corev1.LoadBalancerStatus{
@@ -1307,8 +1307,8 @@ var _ = Describe("PublicIPReconciler", func() {
 		It("should return empty string when ingress IP is empty", func() {
 			svc := &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "osac-publicip-test-publicip",
-					Namespace: "metallb-system",
+					Name:      publicIPServiceNamePrefix + "test-publicip",
+					Namespace: defaultMetalLBNamespace,
 				},
 				Status: corev1.ServiceStatus{
 					LoadBalancer: corev1.LoadBalancerStatus{
@@ -1332,8 +1332,8 @@ var _ = Describe("PublicIPReconciler", func() {
 			// address population until provisioning has completed.
 			svc := &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "osac-publicip-test-publicip",
-					Namespace: "metallb-system",
+					Name:      publicIPServiceNamePrefix + "test-publicip",
+					Namespace: defaultMetalLBNamespace,
 				},
 				Status: corev1.ServiceStatus{
 					LoadBalancer: corev1.LoadBalancerStatus{

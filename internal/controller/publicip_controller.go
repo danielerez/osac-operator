@@ -710,9 +710,9 @@ func (r *PublicIPReconciler) getPublicIPAddress(ctx context.Context, targetClien
 	log := ctrllog.FromContext(ctx)
 
 	svc := &corev1.Service{}
-	serviceName := "osac-publicip-" + publicIPName
-	if err := targetClient.Get(ctx, types.NamespacedName{Namespace: "metallb-system", Name: serviceName}, svc); err != nil {
-		log.Error(err, "failed to get LoadBalancer Service", "namespace", "metallb-system", "name", serviceName)
+	serviceName := publicIPServiceNamePrefix + publicIPName
+	if err := targetClient.Get(ctx, types.NamespacedName{Namespace: defaultMetalLBNamespace, Name: serviceName}, svc); err != nil {
+		log.Error(err, "failed to get LoadBalancer Service", "namespace", defaultMetalLBNamespace, "name", serviceName)
 		return ""
 	}
 
