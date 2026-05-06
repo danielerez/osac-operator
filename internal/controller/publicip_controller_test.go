@@ -1324,7 +1324,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(ip).To(Equal(""))
 		})
 
-		It("should not populate address before provisioning succeeds (temporal ordering, ADDR-01)", func() {
+		It("should not populate address before provisioning succeeds (temporal ordering)", func() {
 			key := types.NamespacedName{Name: publicIP.Name, Namespace: publicIP.Namespace}
 
 			// A LoadBalancer Service with an assigned IP exists on the workload cluster.
@@ -1422,7 +1422,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			return ci
 		}
 
-		It("should auto-detach from Attached state and retain status.address (D-03/D-06, DTCH-04)", func() {
+		It("should auto-detach from Attached state and retain status.address", func() {
 			deletingCI := createDeletingCI(testComputeInstance)
 
 			pip := &osacv1alpha1.PublicIP{
@@ -1472,7 +1472,7 @@ var _ = Describe("PublicIPReconciler", func() {
 
 			Expect(result.specChanged).To(BeTrue(), "spec should be changed (computeInstance cleared)")
 			Expect(pip.Spec.ComputeInstance).To(Equal(""), "spec.computeInstance should be cleared")
-			Expect(pip.Status.Address).To(Equal("10.0.0.1"), "status.address should be retained (DTCH-04)")
+			Expect(pip.Status.Address).To(Equal("10.0.0.1"), "status.address should be retained during auto-detach")
 
 			// Verify CI now has the detach finalizer
 			updatedCI := &osacv1alpha1.ComputeInstance{}
@@ -1480,7 +1480,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(updatedCI.Finalizers).To(ContainElement(osacPublicIPDetachFinalizer))
 		})
 
-		It("should requeue auto-detach when CI deleted during Attaching state (D-09)", func() {
+		It("should requeue auto-detach when CI deleted during Attaching state", func() {
 			deletingCI := createDeletingCI(testComputeInstance)
 
 			pip := &osacv1alpha1.PublicIP{
@@ -1535,7 +1535,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(updatedCI.Finalizers).To(ContainElement(osacPublicIPDetachFinalizer))
 		})
 
-		It("should no-op auto-detach when CI deleted during Releasing state (D-10)", func() {
+		It("should no-op auto-detach when CI deleted during Releasing state", func() {
 			deletingCI := createDeletingCI(testComputeInstance)
 
 			pip := &osacv1alpha1.PublicIP{
@@ -1584,7 +1584,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(result.specChanged).To(BeFalse(), "spec should not change")
 		})
 
-		It("should auto-detach by clearing spec on Failed state when CI deleted (D-11)", func() {
+		It("should auto-detach by clearing spec on Failed state when CI deleted", func() {
 			deletingCI := createDeletingCI(testComputeInstance)
 
 			pip := &osacv1alpha1.PublicIP{
@@ -1634,7 +1634,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(pip.Status.State).To(Equal(osacv1alpha1.PublicIPStateFailed), "state should remain Failed")
 		})
 
-		It("should keep CI auto-detach finalizer when multiple PublicIPs still reference CI (D-05, multi-attach)", func() {
+		It("should keep CI auto-detach finalizer when multiple PublicIPs still reference CI", func() {
 			deletingCI := createDeletingCI(testComputeInstance)
 
 			pip1 := &osacv1alpha1.PublicIP{

@@ -269,7 +269,7 @@ func (r *PublicIPReconciler) handleUpdate(ctx context.Context, publicIP *v1alpha
 	} else if publicIP.Status.State == v1alpha1.PublicIPStateAttached && publicIP.Spec.ComputeInstance == "" {
 		publicIP.Status.Phase = v1alpha1.PublicIPPhaseProgressing
 		publicIP.Status.State = v1alpha1.PublicIPStateReleasing
-		// D-07: emit detach event (Normal for manual detach)
+		// Emit detach event (Normal for manual detach)
 		if r.Recorder != nil {
 			r.Recorder.Eventf(publicIP, nil, corev1.EventTypeNormal,
 				eventReasonDetached, eventActionReconcile,
@@ -285,14 +285,14 @@ func (r *PublicIPReconciler) handleUpdate(ctx context.Context, publicIP *v1alpha
 		}
 	}
 
-	// Populate address after provisioning succeeds (per D-01, D-06, ADDR-01).
+	// Populate address after provisioning succeeds.
 	//
 	// Temporal ordering guarantee: state == Allocated is set exclusively by the
-	// Phase 1 OnSuccess callback in RunProvisioningLifecycle, which fires only
-	// after the AAP provisioning job reports JobStateSucceeded. Therefore this
-	// guard condition ensures address population happens strictly after
-	// provisioning completes, never before. The same temporal pattern is used by
-	// ComputeInstance (getFirstVMIIPAddress runs after VM provisioning succeeds).
+	// OnSuccess callback in RunProvisioningLifecycle, which fires only after the
+	// AAP provisioning job reports JobStateSucceeded. Therefore this guard
+	// ensures address population happens strictly after provisioning completes,
+	// never before. One-shot attach (Pending -> Attached) skips Allocated, so
+	// that path populates the address inside OnSuccess instead.
 	if publicIP.Status.State == v1alpha1.PublicIPStateAllocated && publicIP.Status.Address == "" {
 		targetClient, err := getTargetClient(ctx, r.mgr, r.targetCluster)
 		if err != nil {
@@ -357,7 +357,7 @@ func (r *PublicIPReconciler) syncComputeInstanceTargetNamespaceAnnotation(
 
 	ci := &ciList.Items[0]
 
-	// Auto-detach: if CI is being deleted, handle per state (D-01 through D-11)
+	// Auto-detach: if CI is being deleted, handle per current PublicIP state
 	if !ci.DeletionTimestamp.IsZero() {
 		autoDetachResult, err := r.handleAutoDetach(ctx, publicIP, ci)
 		if err != nil {
@@ -393,8 +393,8 @@ type autoDetachResult struct {
 }
 
 // handleAutoDetach processes a PublicIP whose referenced ComputeInstance is being
-// deleted. It adds a finalizer to the CI (per D-01) and clears spec.computeInstance
-// based on the current state to trigger the existing detach flow (per D-03, D-06).
+// deleted. It adds a finalizer to the CI to block premature garbage collection, and
+// clears spec.computeInstance based on the current state to trigger the existing detach flow.
 func (r *PublicIPReconciler) handleAutoDetach(
 	ctx context.Context,
 	publicIP *v1alpha1.PublicIP,
@@ -402,7 +402,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 ) (autoDetachResult, error) {
 	log := ctrllog.FromContext(ctx)
 
-	// D-01: Add finalizer to CI to guarantee detach completes before CI deletion
+	// Add finalizer to CI to guarantee detach completes before CI deletion
 	if controllerutil.AddFinalizer(ci, osacPublicIPDetachFinalizer) {
 		log.Info("adding publicip-detach finalizer to ComputeInstance",
 			"computeInstance", ci.Name,
@@ -414,11 +414,11 @@ func (r *PublicIPReconciler) handleAutoDetach(
 
 	switch publicIP.Status.State {
 	case v1alpha1.PublicIPStateAttached:
-		// D-03/D-06: clear spec to trigger existing detach flow (Attached -> Releasing)
+		// Clear spec to trigger existing detach flow (Attached -> Releasing)
 		log.Info("auto-detaching PublicIP: ComputeInstance is being deleted",
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
 		publicIP.Spec.ComputeInstance = ""
-		// D-07: emit warning event with generic message (no CI details for tenant reuse safety)
+		// Emit warning event with generic message (no CI details for tenant reuse safety)
 		if r.Recorder != nil {
 			r.Recorder.Eventf(publicIP, nil, corev1.EventTypeWarning,
 				eventReasonAutoDetached, eventActionReconcile,
@@ -427,7 +427,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 		return autoDetachResult{specChanged: true}, nil
 
 	case v1alpha1.PublicIPStateFailed:
-		// D-11: clear stale reference, no AAP call needed. State stays Failed.
+		// Clear stale reference, no AAP call needed. State stays Failed.
 		log.Info("clearing stale ComputeInstance reference on Failed PublicIP",
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
 		ciUUID := publicIP.Spec.ComputeInstance
@@ -440,14 +440,14 @@ func (r *PublicIPReconciler) handleAutoDetach(
 		return autoDetachResult{specChanged: true}, nil
 
 	case v1alpha1.PublicIPStateAttaching:
-		// D-09: let the in-flight attach complete, then auto-detach on next reconcile.
+		// Let the in-flight attach complete, then auto-detach on next reconcile.
 		// OnSuccess will set state to Attached, which triggers this path again.
 		log.Info("ComputeInstance is being deleted but attach is in-flight, waiting",
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
 		return autoDetachResult{requeue: true}, nil
 
 	case v1alpha1.PublicIPStateReleasing:
-		// D-10: detach already in progress, no-op. When detach completes,
+		// Detach already in progress, no-op. When detach completes,
 		// maybeRemoveCIFinalizer will handle finalizer cleanup.
 		log.Info("ComputeInstance is being deleted but detach is already in progress",
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
@@ -470,7 +470,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 
 // maybeRemoveCIFinalizer removes the publicip-detach finalizer from the
 // ComputeInstance identified by ciUUID if no PublicIPs still reference it.
-// Per D-05, the finalizer stays until ALL PublicIPs are detached.
+// The finalizer stays until ALL PublicIPs are detached (multi-attach safe).
 func (r *PublicIPReconciler) maybeRemoveCIFinalizer(ctx context.Context, ciUUID string) error {
 	log := ctrllog.FromContext(ctx)
 
@@ -563,13 +563,24 @@ func (r *PublicIPReconciler) handleProvisioning(ctx context.Context, publicIP *v
 			},
 			OnSuccess: func(_ provisioning.ProvisionStatus) {
 				publicIP.Status.Phase = v1alpha1.PublicIPPhaseReady
+				// Determine final state from spec: if CI ref is present, an attach job
+				// just completed; if empty, this was either initial allocation or detach.
 				if publicIP.Spec.ComputeInstance != "" {
 					publicIP.Status.State = v1alpha1.PublicIPStateAttached
-					// D-07: emit attach event
 					if r.Recorder != nil {
 						r.Recorder.Eventf(publicIP, nil, corev1.EventTypeNormal,
 							eventReasonAttached, eventActionReconcile,
 							"PublicIP attached to ComputeInstance")
+					}
+					// One-shot attach (Pending -> Attached) skips the Allocated state,
+					// so the address population guard in handleUpdate never fires.
+					// Populate address here to cover that path.
+					if publicIP.Status.Address == "" {
+						if targetClient, err := getTargetClient(ctx, r.mgr, r.targetCluster); err == nil {
+							if ip := r.getPublicIPAddress(ctx, targetClient, publicIP.Name); ip != "" {
+								publicIP.Status.Address = ip
+							}
+						}
 					}
 				} else {
 					publicIP.Status.State = v1alpha1.PublicIPStateAllocated
@@ -681,7 +692,7 @@ func (r *PublicIPReconciler) handleDeprovisioning(ctx context.Context, publicIP 
 
 // getPublicIPAddress fetches the LoadBalancer Service created by the AAP create_public_ip
 // playbook and returns the assigned IP from status.loadBalancer.ingress[0].ip.
-// Returns "" on any error or if no IP is assigned yet (best-effort, per D-03).
+// Returns "" on any error or if no IP is assigned yet (best-effort).
 func (r *PublicIPReconciler) getPublicIPAddress(ctx context.Context, targetClient client.Client, publicIPName string) string {
 	log := ctrllog.FromContext(ctx)
 
