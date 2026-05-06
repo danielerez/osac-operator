@@ -454,17 +454,30 @@ func (r *PublicIPReconciler) handleAutoDetach(
 		return autoDetachResult{}, nil
 
 	case v1alpha1.PublicIPStateAllocated:
-		// Detach already completed for this PublicIP. Check if finalizer can be removed.
-		if err := r.maybeRemoveCIFinalizer(ctx, publicIP.Spec.ComputeInstance); err != nil {
+		// Either detach already completed (spec empty) or user just set the CI ref
+		// and the CI is being deleted before attach started. Clear spec if set to
+		// prevent the attach flow from proceeding, then attempt finalizer removal.
+		specChanged := false
+		if publicIP.Spec.ComputeInstance != "" {
+			publicIP.Spec.ComputeInstance = ""
+			specChanged = true
+		}
+		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel]); err != nil {
 			return autoDetachResult{}, err
 		}
-		return autoDetachResult{}, nil
+		return autoDetachResult{specChanged: specChanged}, nil
 
 	default:
-		log.Info("unexpected state during auto-detach, skipping",
+		// Covers Pending and any future states. Clear the spec to prevent the
+		// finalizer (added above) from being stranded with no removal path.
+		log.Info("clearing ComputeInstance reference on PublicIP in unexpected state during auto-detach",
 			"state", publicIP.Status.State,
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
-		return autoDetachResult{}, nil
+		publicIP.Spec.ComputeInstance = ""
+		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel]); err != nil {
+			return autoDetachResult{}, err
+		}
+		return autoDetachResult{specChanged: true}, nil
 	}
 }
 
