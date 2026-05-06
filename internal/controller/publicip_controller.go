@@ -269,8 +269,10 @@ func (r *PublicIPReconciler) handleUpdate(ctx context.Context, publicIP *v1alpha
 	} else if publicIP.Status.State == v1alpha1.PublicIPStateAttached && publicIP.Spec.ComputeInstance == "" {
 		publicIP.Status.Phase = v1alpha1.PublicIPPhaseProgressing
 		publicIP.Status.State = v1alpha1.PublicIPStateReleasing
-		// Emit detach event (Normal for manual detach)
-		if r.Recorder != nil {
+		// Emit detach event only for manual detach. Auto-detach already emitted
+		// an AutoDetached event in handleAutoDetach; needsUpdate is true when
+		// the spec was cleared by auto-detach in this reconcile.
+		if !needsUpdate && r.Recorder != nil {
 			r.Recorder.Eventf(publicIP, nil, corev1.EventTypeNormal,
 				eventReasonDetached, eventActionReconcile,
 				"PublicIP detached from ComputeInstance")
@@ -434,7 +436,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 		publicIP.Spec.ComputeInstance = ""
 		// No AAP detach job runs for Failed state, so OnSuccess will never fire.
 		// Attempt CI finalizer removal directly.
-		if err := r.maybeRemoveCIFinalizer(ctx, ciUUID); err != nil {
+		if err := r.maybeRemoveCIFinalizer(ctx, ciUUID, publicIP.Name); err != nil {
 			return autoDetachResult{}, err
 		}
 		return autoDetachResult{specChanged: true}, nil
@@ -462,7 +464,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 			publicIP.Spec.ComputeInstance = ""
 			specChanged = true
 		}
-		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel]); err != nil {
+		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel], publicIP.Name); err != nil {
 			return autoDetachResult{}, err
 		}
 		return autoDetachResult{specChanged: specChanged}, nil
@@ -474,7 +476,7 @@ func (r *PublicIPReconciler) handleAutoDetach(
 			"state", publicIP.Status.State,
 			"computeInstanceUUID", publicIP.Spec.ComputeInstance)
 		publicIP.Spec.ComputeInstance = ""
-		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel]); err != nil {
+		if err := r.maybeRemoveCIFinalizer(ctx, ci.Labels[osacComputeInstanceIDLabel], publicIP.Name); err != nil {
 			return autoDetachResult{}, err
 		}
 		return autoDetachResult{specChanged: true}, nil
@@ -484,7 +486,13 @@ func (r *PublicIPReconciler) handleAutoDetach(
 // maybeRemoveCIFinalizer removes the publicip-detach finalizer from the
 // ComputeInstance identified by ciUUID if no PublicIPs still reference it.
 // The finalizer stays until ALL PublicIPs are detached (multi-attach safe).
-func (r *PublicIPReconciler) maybeRemoveCIFinalizer(ctx context.Context, ciUUID string) error {
+//
+// excludePublicIP is the name of a PublicIP whose spec.computeInstance has been
+// cleared in memory but not yet persisted. The API server still shows the old
+// value, so we skip it to avoid a false "still referenced" result.
+// Pass "" when no exclusion is needed (e.g. from OnSuccess, where the spec is
+// already persisted).
+func (r *PublicIPReconciler) maybeRemoveCIFinalizer(ctx context.Context, ciUUID string, excludePublicIP string) error {
 	log := ctrllog.FromContext(ctx)
 
 	ciList := &v1alpha1.ComputeInstanceList{}
@@ -510,6 +518,9 @@ func (r *PublicIPReconciler) maybeRemoveCIFinalizer(ctx context.Context, ciUUID 
 	}
 
 	for i := range publicIPs.Items {
+		if publicIPs.Items[i].Name == excludePublicIP {
+			continue
+		}
 		if publicIPs.Items[i].Spec.ComputeInstance == ciUUID {
 			log.Info("other PublicIPs still reference CI, keeping finalizer",
 				"computeInstanceUUID", ciUUID,
@@ -599,7 +610,7 @@ func (r *PublicIPReconciler) handleProvisioning(ctx context.Context, publicIP *v
 					publicIP.Status.State = v1alpha1.PublicIPStateAllocated
 					// After detach completes, attempt CI finalizer removal
 					if priorCIUUID != "" {
-						if err := r.maybeRemoveCIFinalizer(ctx, priorCIUUID); err != nil {
+						if err := r.maybeRemoveCIFinalizer(ctx, priorCIUUID, ""); err != nil {
 							log.Error(err, "failed to remove CI finalizer after detach",
 								"computeInstanceUUID", priorCIUUID)
 							// Non-fatal: finalizer cleanup will retry on next reconcile

@@ -1702,7 +1702,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(fc.Update(testCtx, pip1)).To(Succeed())
 
 			// pip2 still references the CI, so finalizer should remain
-			err = rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance)
+			err = rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance, "")
 			Expect(err).NotTo(HaveOccurred())
 
 			updatedCI := &osacv1alpha1.ComputeInstance{}
@@ -1716,7 +1716,7 @@ var _ = Describe("PublicIPReconciler", func() {
 			Expect(fc.Update(testCtx, pip2)).To(Succeed())
 
 			// Now finalizer should be removed (no more references)
-			err = rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance)
+			err = rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance, "")
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(fc.Get(testCtx, client.ObjectKeyFromObject(deletingCI), updatedCI)).To(Succeed())
@@ -1781,7 +1781,7 @@ var _ = Describe("PublicIPReconciler", func() {
 				MaxJobHistory:            10,
 			}
 
-			err := rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance)
+			err := rec.maybeRemoveCIFinalizer(testCtx, testComputeInstance, "")
 			Expect(err).NotTo(HaveOccurred())
 
 			updatedCI := &osacv1alpha1.ComputeInstance{}
