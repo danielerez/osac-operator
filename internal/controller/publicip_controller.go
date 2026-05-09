@@ -329,7 +329,7 @@ func (r *PublicIPReconciler) syncComputeInstanceTargetNamespaceAnnotation(
 
 	if publicIP.Spec.ComputeInstance == "" {
 		if _, ok := publicIP.Annotations[osacPublicIPTargetNamespaceAnnotation]; ok {
-			if publicIP.Status.State != v1alpha1.PublicIPStateReleasing {
+			if publicIP.Status.State == v1alpha1.PublicIPStateAllocated {
 				delete(publicIP.Annotations, osacPublicIPTargetNamespaceAnnotation)
 				log.Info("cleared publicip-target-namespace annotation")
 				return true, false, nil
