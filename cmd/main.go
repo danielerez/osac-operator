@@ -59,9 +59,9 @@ import (
 
 	v1alpha1 "github.com/osac-project/osac-operator/api/v1alpha1"
 	"github.com/osac-project/osac-operator/helpers"
-	"github.com/osac-project/osac-operator/internal/aap"
 	"github.com/osac-project/osac-operator/internal/controller"
-	"github.com/osac-project/osac-operator/internal/provisioning"
+	"github.com/osac-project/osac-operator/pkg/aap"
+	"github.com/osac-project/osac-operator/pkg/provisioning"
 	// +kubebuilder:scaffold:imports
 )
 

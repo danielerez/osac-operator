@@ -34,6 +34,10 @@ linters:
     generated: lax
     rules:
       - linters:
+          - dupl
+          - lll
+        path: pkg/
+      - linters:
           - lll
         path: api/
       - linters:
