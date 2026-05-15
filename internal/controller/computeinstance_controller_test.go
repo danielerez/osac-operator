@@ -180,6 +180,65 @@ var _ = Describe("ComputeInstance Controller", func() {
 		})
 	})
 
+	Context("management-state unmanaged with deletion", func() {
+		const namespaceName = "default"
+		const tenantName = "test-tenant-unmanaged"
+		ctx := context.Background()
+
+		It("should still handle delete for unmanaged ComputeInstance with finalizer", func() {
+			createReadyTenant(ctx, namespaceName, tenantName)
+
+			managedThenUnmanaged := &osacv1alpha1.ComputeInstance{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "managed-then-unmanaged",
+					Namespace: namespaceName,
+					Annotations: map[string]string{
+						osacComputeInstanceManagementStateAnnotation: ManagementStateUnmanaged,
+						osacTenantAnnotation:                         tenantName,
+					},
+					Finalizers: []string{osacComputeInstanceFinalizer},
+				},
+				Spec: newTestComputeInstanceSpec("test_template"),
+			}
+			Expect(k8sClient.Create(ctx, managedThenUnmanaged)).To(Succeed())
+
+			key := types.NamespacedName{Name: managedThenUnmanaged.Name, Namespace: namespaceName}
+
+			mockProv := &mockProvisioningProvider{
+				name: string(provisioning.ProviderTypeAAP),
+				triggerDeprovisionFunc: func(ctx context.Context, resource client.Object) (*provisioning.DeprovisionResult, error) {
+					return &provisioning.DeprovisionResult{
+						Action: provisioning.DeprovisionSkipped,
+					}, nil
+				},
+			}
+			controllerReconciler := NewComputeInstanceReconciler(
+				testMcManager, "", namespaceName,
+				mockProv,
+				100*time.Millisecond, 0, mcmanager.LocalCluster,
+			)
+
+			Expect(k8sClient.Delete(ctx, managedThenUnmanaged)).To(Succeed())
+
+			Eventually(func(g Gomega) {
+				ci := &osacv1alpha1.ComputeInstance{}
+				g.Expect(controllerReconciler.Get(ctx, key, ci)).To(Succeed())
+				g.Expect(ci.DeletionTimestamp.IsZero()).To(BeFalse())
+			}, 5*time.Second, 100*time.Millisecond).Should(Succeed())
+
+			_, err := controllerReconciler.Reconcile(ctx, mcreconcile.Request{Request: reconcile.Request{
+				NamespacedName: key,
+			}})
+			Expect(err).NotTo(HaveOccurred())
+
+			Eventually(func() bool {
+				return errors.IsNotFound(k8sClient.Get(ctx, key, &osacv1alpha1.ComputeInstance{}))
+			}, 5*time.Second, 100*time.Millisecond).Should(BeTrue())
+
+			deleteTenantInNamespace(ctx, namespaceName, tenantName)
+		})
+	})
+
 	Context("handleDesiredConfigVersion", func() {
 		var reconciler *ComputeInstanceReconciler
 		ctx := context.Background()

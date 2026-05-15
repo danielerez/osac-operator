@@ -105,7 +105,7 @@ func (r *SubnetReconciler) Reconcile(ctx context.Context, req mcreconcile.Reques
 	}
 
 	val, exists := subnet.Annotations[osacManagementStateAnnotation]
-	if exists && val == ManagementStateUnmanaged {
+	if subnet.ObjectMeta.DeletionTimestamp.IsZero() && exists && val == ManagementStateUnmanaged {
 		log.Info("ignoring Subnet due to management-state annotation", "management-state", val)
 		return ctrl.Result{}, nil
 	}

@@ -22,6 +22,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -491,6 +492,81 @@ var _ = Describe("VirtualNetworkReconciler", func() {
 			// Verify finalizer was removed from the in-memory object
 			// (the resource may already be garbage collected after finalizer removal)
 			Expect(vnet.Finalizers).NotTo(ContainElement(osacVirtualNetworkFinalizer))
+		})
+	})
+
+	Context("management-state unmanaged", func() {
+		It("should ignore VirtualNetwork with unmanaged annotation", func() {
+			unmanagedVnet := &osacv1alpha1.VirtualNetwork{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "unmanaged-vnet",
+					Namespace: "default",
+					Annotations: map[string]string{
+						osacManagementStateAnnotation: ManagementStateUnmanaged,
+					},
+				},
+				Spec: osacv1alpha1.VirtualNetworkSpec{
+					Region:                 "us-west-1",
+					IPv4CIDR:               "10.0.0.0/16",
+					NetworkClass:           "cudn-net",
+					ImplementationStrategy: "cudn-net",
+				},
+			}
+			Expect(k8sClient.Create(ctx, unmanagedVnet)).To(Succeed())
+
+			key := types.NamespacedName{Name: unmanagedVnet.Name, Namespace: unmanagedVnet.Namespace}
+			_, err := reconciler.Reconcile(ctx, mcreconcile.Request{Request: reconcile.Request{
+				NamespacedName: key,
+			}})
+			Expect(err).NotTo(HaveOccurred())
+
+			updated := &osacv1alpha1.VirtualNetwork{}
+			Expect(k8sClient.Get(ctx, key, updated)).To(Succeed())
+			Expect(updated.Finalizers).To(BeEmpty())
+			Expect(updated.Status.Phase).To(BeEmpty())
+
+			_ = k8sClient.Delete(ctx, unmanagedVnet)
+		})
+
+		It("should still handle delete for unmanaged VirtualNetwork with finalizer", func() {
+			managedThenUnmanaged := &osacv1alpha1.VirtualNetwork{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "managed-then-unmanaged",
+					Namespace: "default",
+					Annotations: map[string]string{
+						osacManagementStateAnnotation: ManagementStateUnmanaged,
+					},
+					Finalizers: []string{osacVirtualNetworkFinalizer},
+				},
+				Spec: osacv1alpha1.VirtualNetworkSpec{
+					Region:                 "us-west-1",
+					IPv4CIDR:               "10.0.0.0/16",
+					NetworkClass:           "cudn-net",
+					ImplementationStrategy: "cudn-net",
+				},
+			}
+			Expect(k8sClient.Create(ctx, managedThenUnmanaged)).To(Succeed())
+
+			key := types.NamespacedName{Name: managedThenUnmanaged.Name, Namespace: managedThenUnmanaged.Namespace}
+
+			mockProvider.triggerDeprovisionFunc = func(
+				ctx context.Context, resource client.Object,
+			) (*provisioning.DeprovisionResult, error) {
+				return &provisioning.DeprovisionResult{
+					Action: provisioning.DeprovisionSkipped,
+				}, nil
+			}
+
+			Expect(k8sClient.Delete(ctx, managedThenUnmanaged)).To(Succeed())
+
+			_, err := reconciler.Reconcile(ctx, mcreconcile.Request{Request: reconcile.Request{
+				NamespacedName: key,
+			}})
+			Expect(err).NotTo(HaveOccurred())
+
+			Eventually(func() bool {
+				return errors.IsNotFound(k8sClient.Get(ctx, key, &osacv1alpha1.VirtualNetwork{}))
+			}, 5*time.Second, 100*time.Millisecond).Should(BeTrue())
 		})
 	})
 

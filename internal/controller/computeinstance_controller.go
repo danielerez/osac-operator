@@ -134,7 +134,7 @@ func (r *ComputeInstanceReconciler) Reconcile(ctx context.Context, req mcreconci
 	}
 
 	val, exists := instance.Annotations[osacComputeInstanceManagementStateAnnotation]
-	if exists && val == ManagementStateUnmanaged {
+	if instance.ObjectMeta.DeletionTimestamp.IsZero() && exists && val == ManagementStateUnmanaged {
 		log.Info("ignoring ComputeInstance due to management-state annotation", "management-state", val)
 		return ctrl.Result{}, nil
 	}
