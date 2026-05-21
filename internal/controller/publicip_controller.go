@@ -260,8 +260,8 @@ func (r *PublicIPReconciler) handleUpdate(ctx context.Context, publicIP *v1alpha
 	v1alpha1.SetPublicIPStatusCondition(publicIP, metav1.Condition{
 		Type:               string(v1alpha1.PublicIPConditionConfigurationApplied),
 		Status:             metav1.ConditionTrue,
-		Reason:             "ConfigurationApplied",
-		Message:            "Controller has processed the current spec",
+		Reason:             conditionReasonConfigurationApplied,
+		Message:            conditionMessageConfigurationApplied,
 		LastTransitionTime: metav1.Now(),
 	})
 

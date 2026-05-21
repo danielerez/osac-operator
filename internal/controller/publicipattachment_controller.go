@@ -245,8 +245,8 @@ func (r *PublicIPAttachmentReconciler) handleUpdate(ctx context.Context, attachm
 	v1alpha1.SetPublicIPAttachmentStatusCondition(attachment, metav1.Condition{
 		Type:               string(v1alpha1.PublicIPAttachmentConditionConfigurationApplied),
 		Status:             metav1.ConditionTrue,
-		Reason:             "ConfigurationApplied",
-		Message:            "Controller has processed the current spec",
+		Reason:             conditionReasonConfigurationApplied,
+		Message:            conditionMessageConfigurationApplied,
 		LastTransitionTime: metav1.Now(),
 	})
 

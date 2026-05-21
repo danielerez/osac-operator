@@ -43,4 +43,7 @@ const (
 	defaultPublicIPPoolImplementationStrategy = "metallb-l2"
 
 	deprovisioningJobTriggeredMessage = "Deprovisioning job triggered"
+
+	conditionReasonConfigurationApplied  = "ConfigurationApplied"
+	conditionMessageConfigurationApplied = "Controller has processed the current spec"
 )
