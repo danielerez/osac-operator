@@ -321,7 +321,7 @@ func (r *TenantReconciler) pollProvisionJob(ctx context.Context, instance *v1alp
 
 	if status.State.IsSuccessful() {
 		log.Info("storage provisioning job succeeded, requeueing to confirm StorageClass", "jobID", latestJob.JobID)
-		return ctrl.Result{Requeue: true}, nil
+		return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
 	}
 
 	log.Info("storage provisioning job failed", "jobID", latestJob.JobID, "message", updatedJob.Message)
@@ -442,6 +442,10 @@ func (r *TenantReconciler) handleStorageDeprovisioning(ctx context.Context, inst
 
 		case provisioning.DeprovisionWaiting:
 			log.Info("storage deprovisioning not ready, requeueing")
+			return ctrl.Result{RequeueAfter: r.StatusPollInterval}, nil
+
+		default:
+			log.Error(nil, "unexpected deprovision action, requeueing", "action", result.Action)
 			return ctrl.Result{RequeueAfter: r.StatusPollInterval}, nil
 		}
 	}
