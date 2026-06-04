@@ -206,12 +206,12 @@ func (p *AAPProvider) isReadyForDeprovision(ctx context.Context, resource client
 }
 
 // cancelProvisionJob attempts to cancel a running provision job via AAP API.
-// Returns nil if cancellation was initiated successfully or if the job is already in a terminal state (HTTP 405).
+// Returns nil if cancellation was initiated (HTTP 202). Returns *aap.MethodNotAllowedError when
+// AAP responds with HTTP 405 (job already terminal); the caller proceeds to deprovision immediately.
 // Note: Cancellation is asynchronous. The job status should be polled to confirm termination.
 func (p *AAPProvider) cancelProvisionJob(ctx context.Context, jobID string) error {
-	// Attempt to cancel the job
-	// HTTP 202 → cancellation initiated
-	// HTTP 405 → job already terminal (not an error)
+	// HTTP 202 → cancellation initiated (nil)
+	// HTTP 405 → job already terminal (*aap.MethodNotAllowedError, handled by caller)
 	err := p.client.CancelJob(ctx, jobID)
 	if err != nil {
 		// Check if error is "Method not allowed" (405) - indicates job already terminal
