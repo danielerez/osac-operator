@@ -157,7 +157,7 @@ func (r *ClusterOrderReconciler) newHubAccessRoleBinding(ctx context.Context, in
 		roleBinding.RoleRef = rbacv1.RoleRef{
 			APIGroup: rbacv1.GroupName,
 			Kind:     "ClusterRole",
-			Name:     hubAccessClusterRoleName,
+			Name:     r.hubAccessClusterRoleName(),
 		}
 		return nil
 	}

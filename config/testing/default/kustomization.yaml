@@ -11,6 +11,13 @@ patches:
       kind: Deployment
       name: osac-operator-controller-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/imagePullPolicy
-        value: Never
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: osac-operator-controller-manager
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                imagePullPolicy: Never

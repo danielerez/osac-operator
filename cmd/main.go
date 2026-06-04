@@ -628,6 +628,17 @@ func setupNetworkingControllers(
 		}
 	}
 
+	// Setup PublicIPAttachment feedback controller
+	if grpcConn != nil {
+		if err := controller.NewPublicIPAttachmentFeedbackReconciler(
+			localMgr.GetClient(),
+			grpcConn,
+			networkingNamespace,
+		).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("publicipattachment feedback controller: %w", err)
+		}
+	}
+
 	return nil
 }
 

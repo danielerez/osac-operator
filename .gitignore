@@ -5,7 +5,12 @@
 *.so
 *.dylib
 bin/*
+# console-proxy binary artifact (see: make build → bin/console-proxy).
+# Match the name anywhere so ad-hoc build paths are ignored, but keep
+# kustomize overlays under config/**/console-proxy/ versioned.
 console-proxy
+!config/**/console-proxy/
+!config/**/console-proxy/**
 main
 Containerfile.cross
 Dockerfile.manifests
