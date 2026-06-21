@@ -93,7 +93,10 @@ var _ = Describe("Tenant Controller", func() {
 					Name:      resourceName,
 					Namespace: "default",
 				},
-				Spec: v1alpha1.TenantSpec{},
+				Spec: v1alpha1.TenantSpec{
+					DisplayName:  "Test Tenant",
+					EmailDomains: []string{"example.com"},
+				},
 			}
 			Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 		})
@@ -372,6 +375,10 @@ var _ = Describe("Tenant Controller", func() {
 			if err != nil && errors.IsNotFound(err) {
 				Expect(k8sClient.Create(ctx, &v1alpha1.Tenant{
 					ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: "default"},
+					Spec: v1alpha1.TenantSpec{
+						DisplayName:  "Test Tenant",
+						EmailDomains: []string{"example.com"},
+					},
 				})).To(Succeed())
 			}
 		})
@@ -451,6 +458,10 @@ var _ = Describe("Tenant Controller", func() {
 			if err != nil && errors.IsNotFound(err) {
 				Expect(k8sClient.Create(ctx, &v1alpha1.Tenant{
 					ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: "default"},
+					Spec: v1alpha1.TenantSpec{
+						DisplayName:  "Test Tenant",
+						EmailDomains: []string{"example.com"},
+					},
 				})).To(Succeed())
 			}
 		})
@@ -513,6 +524,10 @@ var _ = Describe("Tenant Controller", func() {
 			if err != nil && errors.IsNotFound(err) {
 				Expect(k8sClient.Create(ctx, &v1alpha1.Tenant{
 					ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: "default"},
+					Spec: v1alpha1.TenantSpec{
+						DisplayName:  "Test Tenant",
+						EmailDomains: []string{"example.com"},
+					},
 				})).To(Succeed())
 			}
 		})
@@ -601,6 +616,10 @@ var _ = Describe("Tenant Controller", func() {
 			if err != nil && errors.IsNotFound(err) {
 				Expect(k8sClient.Create(ctx, &v1alpha1.Tenant{
 					ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: "default"},
+					Spec: v1alpha1.TenantSpec{
+						DisplayName:  "Test Tenant",
+						EmailDomains: []string{"example.com"},
+					},
 				})).To(Succeed())
 			}
 
@@ -697,6 +716,10 @@ var _ = Describe("Tenant Controller", func() {
 			if err != nil && errors.IsNotFound(err) {
 				Expect(k8sClient.Create(ctx, &v1alpha1.Tenant{
 					ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: "default"},
+					Spec: v1alpha1.TenantSpec{
+						DisplayName:  "Test Tenant",
+						EmailDomains: []string{"example.com"},
+					},
 				})).To(Succeed())
 			}
 
