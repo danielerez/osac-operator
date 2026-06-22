@@ -194,9 +194,11 @@ func (w *Watcher) poll(ctx context.Context) {
 		current[t.ID] = t
 	}
 
-	w.mu.RLock()
+	w.mu.Lock()
 	events := w.diff(current)
-	w.mu.RUnlock()
+	w.snapshot = current
+	w.ready = true
+	w.mu.Unlock()
 
 	for _, evt := range events {
 		eventsTotal.WithLabelValues(string(evt.Type)).Inc()
@@ -207,11 +209,6 @@ func (w *Watcher) poll(ctx context.Context) {
 		)
 		w.enqueuer(evt.Tenant.Name)
 	}
-
-	w.mu.Lock()
-	w.snapshot = current
-	w.ready = true
-	w.mu.Unlock()
 }
 
 func (w *Watcher) diff(current map[string]TenantRecord) []TenantEvent {
