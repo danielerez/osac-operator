@@ -431,7 +431,11 @@ func setupTenantDBWatcher(tenantNamespace string) (<-chan event.TypedGenericEven
 
 	ch := make(chan event.TypedGenericEvent[string], 256)
 	enqueuer := func(tenantName string) {
-		ch <- event.TypedGenericEvent[string]{Object: tenantName}
+		select {
+		case ch <- event.TypedGenericEvent[string]{Object: tenantName}:
+		default:
+			setupLog.V(1).Info("database watcher event channel full, dropping event", "tenant", tenantName)
+		}
 	}
 
 	querier := dbwatch.NewPgQuerier(databaseURL, setupLog)
