@@ -41,6 +41,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
@@ -964,10 +965,7 @@ func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 
 	if r.tenantLookup != nil && r.reconcileInterval > 0 {
 		localMgr := mgr.GetLocalManager()
-		reconcileCtx, reconcileCancel := context.WithCancel(context.Background())
-		go func() {
-			<-localMgr.Elected()
-
+		if err := localMgr.Add(manager.RunnableFunc(func(ctx context.Context) error {
 			log := ctrl.Log.WithName("tenant-reconciliation-loop")
 			log.Info("starting periodic full reconciliation", "interval", r.reconcileInterval)
 
@@ -976,17 +974,18 @@ func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 
 			for {
 				select {
-				case <-reconcileCtx.Done():
+				case <-ctx.Done():
 					log.Info("stopping periodic full reconciliation")
-					return
+					return nil
 				case <-ticker.C:
-					if err := r.runFullReconciliation(reconcileCtx); err != nil {
+					if err := r.runFullReconciliation(ctx); err != nil {
 						log.Error(err, "full reconciliation failed")
 					}
 				}
 			}
-		}()
-		_ = reconcileCancel // cancelled when the process exits
+		})); err != nil {
+			return fmt.Errorf("adding reconciliation loop runnable: %w", err)
+		}
 	}
 
 	return builder.Complete(r)
