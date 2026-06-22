@@ -41,6 +41,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
@@ -70,6 +71,7 @@ type TenantReconciler struct {
 	MaxJobHistory        int
 	dbEventCh            <-chan event.TypedGenericEvent[string]
 	tenantLookup         dbwatch.TenantLookup
+	reconcileInterval    time.Duration
 }
 
 // +kubebuilder:rbac:groups=osac.openshift.io,resources=tenants,verbs=get;list;watch;create;update;patch;delete
@@ -89,6 +91,7 @@ func NewTenantReconciler(
 	maxJobHistory int,
 	dbEventCh <-chan event.TypedGenericEvent[string],
 	tenantLookup dbwatch.TenantLookup,
+	reconcileInterval time.Duration,
 ) *TenantReconciler {
 	if mgr == nil {
 		panic("mgr must not be nil")
@@ -114,6 +117,7 @@ func NewTenantReconciler(
 		MaxJobHistory:        maxJobHistory,
 		dbEventCh:            dbEventCh,
 		tenantLookup:         tenantLookup,
+		reconcileInterval:    reconcileInterval,
 	}
 }
 
@@ -139,6 +143,18 @@ func (r *TenantReconciler) Reconcile(ctx context.Context, req mcreconcile.Reques
 			return ctrl.Result{}, client.IgnoreNotFound(err)
 		}
 		return ctrl.Result{}, nil
+	}
+
+	if instance.ObjectMeta.DeletionTimestamp.IsZero() && r.tenantLookup != nil && r.tenantLookup.Ready() {
+		if instance.Annotations[osacManagedByAnnotation] == osacManagedByValue {
+			if err := r.syncManagedCR(ctx, instance); err != nil {
+				return ctrl.Result{}, err
+			}
+		} else {
+			if err := r.adoptLegacyCR(ctx, instance); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
 	}
 
 	oldstatus := instance.Status.DeepCopy()
@@ -461,6 +477,87 @@ func (r *TenantReconciler) shouldDeleteManagedCR(instance *v1alpha1.Tenant) bool
 	return !found
 }
 
+// syncManagedCR updates a managed CR's spec fields if they diverge from DB state.
+func (r *TenantReconciler) syncManagedCR(ctx context.Context, instance *v1alpha1.Tenant) error {
+	log := ctrllog.FromContext(ctx)
+
+	record, found := r.tenantLookup.GetTenantByName(instance.Name)
+	if !found {
+		return nil
+	}
+
+	needsUpdate := false
+	if instance.Spec.DisplayName != record.DisplayName {
+		instance.Spec.DisplayName = record.DisplayName
+		needsUpdate = true
+	}
+	if !stringSlicesEqual(instance.Spec.EmailDomains, record.EmailDomains) {
+		instance.Spec.EmailDomains = record.EmailDomains
+		needsUpdate = true
+	}
+
+	if !needsUpdate {
+		return nil
+	}
+
+	if err := r.Update(ctx, instance); err != nil {
+		return err
+	}
+	log.Info("synced managed CR spec from database", "name", instance.Name)
+	r.Recorder.Eventf(instance, nil, corev1.EventTypeNormal, eventReasonSpecSynced, "SpecSync",
+		"Synced spec fields from database for tenant %q", instance.Name)
+	return nil
+}
+
+// adoptLegacyCR adds the managed-by annotation and backfills missing fields for
+// an unmanaged CR that matches a database tenant.
+func (r *TenantReconciler) adoptLegacyCR(ctx context.Context, instance *v1alpha1.Tenant) error {
+	log := ctrllog.FromContext(ctx)
+
+	record, found := r.tenantLookup.GetTenantByName(instance.Name)
+	if !found {
+		return nil
+	}
+
+	if record.DisplayName == "" {
+		log.Info("skipping adoption: DB record has empty displayName", "name", instance.Name)
+		return nil
+	}
+
+	if instance.Annotations == nil {
+		instance.Annotations = make(map[string]string)
+	}
+	instance.Annotations[osacManagedByAnnotation] = osacManagedByValue
+
+	if instance.Spec.DisplayName == "" {
+		instance.Spec.DisplayName = record.DisplayName
+	}
+	if len(instance.Spec.EmailDomains) == 0 && len(record.EmailDomains) > 0 {
+		instance.Spec.EmailDomains = record.EmailDomains
+	}
+
+	if err := r.Update(ctx, instance); err != nil {
+		return err
+	}
+	log.Info("adopted legacy CR", "name", instance.Name)
+	r.Recorder.Eventf(instance, nil, corev1.EventTypeNormal, eventReasonAdopted, "Adoption",
+		"Adopted legacy tenant CR %q with managed-by annotation", instance.Name)
+	return nil
+}
+
+// stringSlicesEqual returns true if two string slices have the same elements in order.
+func stringSlicesEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // handleStorageDeprovisioning triggers an AAP job to remove tenant storage and
 // polls until it completes. Returns a result with RequeueAfter > 0 if the job
 // is still running.
@@ -781,6 +878,54 @@ func (r *TenantReconciler) mapObjectToTenant(ctx context.Context, obj client.Obj
 	}
 }
 
+// runFullReconciliation performs a complete diff between DB state and cluster CRs.
+// It enqueues reconcile requests for the union of DB tenant names and CR names,
+// so that both missing CRs (creates) and orphaned CRs (deletes) are handled.
+func (r *TenantReconciler) runFullReconciliation(ctx context.Context) error {
+	log := ctrllog.FromContext(ctx)
+
+	if r.tenantLookup == nil || !r.tenantLookup.Ready() {
+		log.Info("skipping full reconciliation: tenant lookup not ready")
+		return nil
+	}
+
+	dbTenants := r.tenantLookup.AllTenants()
+	dbNames := make(map[string]struct{}, len(dbTenants))
+	for _, t := range dbTenants {
+		dbNames[t.Name] = struct{}{}
+	}
+
+	crList := &v1alpha1.TenantList{}
+	if err := r.List(ctx, crList, client.InNamespace(r.tenantNamespace)); err != nil {
+		return fmt.Errorf("listing tenant CRs for full reconciliation: %w", err)
+	}
+
+	allNames := make(map[string]struct{}, len(dbNames)+len(crList.Items))
+	for name := range dbNames {
+		allNames[name] = struct{}{}
+	}
+	for i := range crList.Items {
+		allNames[crList.Items[i].Name] = struct{}{}
+	}
+
+	for name := range allNames {
+		_, err := r.Reconcile(ctx, mcreconcile.Request{
+			Request: reconcile.Request{
+				NamespacedName: types.NamespacedName{
+					Namespace: r.tenantNamespace,
+					Name:      name,
+				},
+			},
+		})
+		if err != nil {
+			log.Error(err, "error during full reconciliation", "tenant", name)
+		}
+	}
+
+	log.Info("full reconciliation complete", "tenantsChecked", len(allNames))
+	return nil
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 	// Predicate to filter resources with tenant label
@@ -816,6 +961,31 @@ func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 		builder = builder.WatchesRawSource(
 			source.TypedChannel(r.dbEventCh, r.dbEventHandler()),
 		)
+	}
+
+	if r.tenantLookup != nil && r.reconcileInterval > 0 {
+		localMgr := mgr.GetLocalManager()
+		if err := localMgr.Add(manager.RunnableFunc(func(ctx context.Context) error {
+			log := ctrl.Log.WithName("tenant-reconciliation-loop")
+			log.Info("starting periodic full reconciliation", "interval", r.reconcileInterval)
+
+			ticker := time.NewTicker(r.reconcileInterval)
+			defer ticker.Stop()
+
+			for {
+				select {
+				case <-ctx.Done():
+					log.Info("stopping periodic full reconciliation")
+					return nil
+				case <-ticker.C:
+					if err := r.runFullReconciliation(ctx); err != nil {
+						log.Error(err, "full reconciliation failed")
+					}
+				}
+			}
+		})); err != nil {
+			return fmt.Errorf("adding reconciliation loop runnable: %w", err)
+		}
 	}
 
 	return builder.Complete(r)
