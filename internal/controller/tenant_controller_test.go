@@ -56,6 +56,17 @@ func (m *mockTenantLookup) GetTenantByName(name string) (dbwatch.TenantRecord, b
 	return dbwatch.TenantRecord{}, false
 }
 
+func (m *mockTenantLookup) AllTenants() []dbwatch.TenantRecord {
+	if m.tenants == nil {
+		return nil
+	}
+	result := make([]dbwatch.TenantRecord, 0, len(m.tenants))
+	for _, t := range m.tenants {
+		result = append(result, t)
+	}
+	return result
+}
+
 func (m *mockTenantLookup) Ready() bool {
 	return m.ready
 }

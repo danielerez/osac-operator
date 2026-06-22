@@ -31,6 +31,7 @@ import (
 // TenantLookup provides read-only access to the watcher's tenant snapshot.
 type TenantLookup interface {
 	GetTenantByName(name string) (TenantRecord, bool)
+	AllTenants() []TenantRecord
 	Ready() bool
 }
 
@@ -168,6 +169,20 @@ func (w *Watcher) GetTenantByName(name string) (TenantRecord, bool) {
 		}
 	}
 	return TenantRecord{}, false
+}
+
+// AllTenants returns a copy of all tenant records in the current snapshot.
+func (w *Watcher) AllTenants() []TenantRecord {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	if w.snapshot == nil {
+		return nil
+	}
+	result := make([]TenantRecord, 0, len(w.snapshot))
+	for _, t := range w.snapshot {
+		result = append(result, t)
+	}
+	return result
 }
 
 // Ready returns true after the first successful poll has populated the snapshot.

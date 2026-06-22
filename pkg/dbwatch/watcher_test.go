@@ -485,6 +485,80 @@ var _ = Describe("Watcher", func() {
 				}, 200*time.Millisecond, 5*time.Millisecond).Should(BeTrue())
 			})
 		})
+
+		Describe("AllTenants", func() {
+			It("returns empty slice when snapshot is nil", func() {
+				w := &Watcher{log: newTestLogger()}
+
+				result := w.AllTenants()
+				Expect(result).To(BeEmpty())
+			})
+
+			It("returns all records in the snapshot", func() {
+				w := &Watcher{log: newTestLogger()}
+				w.snapshot = map[string]TenantRecord{
+					"id-1": {ID: "id-1", Name: "tenant-a", DisplayName: "Tenant A"},
+					"id-2": {ID: "id-2", Name: "tenant-b", DisplayName: "Tenant B", EmailDomains: []string{"b.com"}},
+				}
+				w.ready = true
+
+				result := w.AllTenants()
+				Expect(result).To(HaveLen(2))
+				names := make([]string, len(result))
+				for i, r := range result {
+					names[i] = r.Name
+				}
+				Expect(names).To(ContainElements("tenant-a", "tenant-b"))
+			})
+
+			It("returns a copy that does not affect the snapshot", func() {
+				w := &Watcher{log: newTestLogger()}
+				w.snapshot = map[string]TenantRecord{
+					"id-1": {ID: "id-1", Name: "tenant-a"},
+				}
+				w.ready = true
+
+				result := w.AllTenants()
+				Expect(result).To(HaveLen(1))
+
+				result[0].Name = "mutated"
+				record, found := w.GetTenantByName("tenant-a")
+				Expect(found).To(BeTrue())
+				Expect(record.Name).To(Equal("tenant-a"))
+			})
+
+			It("does not panic under concurrent access with poll", func() {
+				collector := &enqueueCollector{}
+				callCount := 0
+				querier := &mockQuerier{
+					tenantFn: func(_ int) ([]TenantRecord, error) {
+						callCount++
+						return []TenantRecord{
+							{ID: "id-1", Name: fmt.Sprintf("tenant-%d", callCount)},
+						}, nil
+					},
+				}
+				w := &Watcher{
+					querier:  querier,
+					enqueuer: collector.enqueue,
+					log:      newTestLogger(),
+				}
+
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+
+				go func() {
+					for ctx.Err() == nil {
+						w.poll(ctx)
+					}
+				}()
+
+				Consistently(func() bool {
+					w.AllTenants()
+					return true
+				}, 200*time.Millisecond, 5*time.Millisecond).Should(BeTrue())
+			})
+		})
 	})
 
 	Describe("TenantRecord.equal", func() {
