@@ -73,7 +73,7 @@ func mcReconcileRequest(nn types.NamespacedName) mcreconcile.Request {
 // namespaces are never fully deleted).
 func reconcileUntilDeleting(ctx context.Context, nn types.NamespacedName) {
 	Eventually(func(g Gomega) {
-		r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0)
+		r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0, nil)
 		_, err := r.Reconcile(ctx, mcReconcileRequest(nn))
 		g.Expect(err).NotTo(HaveOccurred())
 	}).Should(Succeed())
@@ -107,7 +107,7 @@ var _ = Describe("Tenant Controller", func() {
 
 		It("should transition through all Ready/Progressing phases with multi-tier StorageClasses", func() {
 			fakeRecorder := events.NewFakeRecorder(100)
-			controllerReconciler := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0)
+			controllerReconciler := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0, nil)
 			controllerReconciler.Recorder = fakeRecorder
 
 			By("waiting for the Tenant to appear in the controller's cache")
@@ -391,7 +391,7 @@ var _ = Describe("Tenant Controller", func() {
 
 		It("should trigger provisioning and become Ready after SC is created", func() {
 			provider := &mockProvisioningProvider{}
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory, nil)
 
 			By("first reconcile: trigger provisioning job")
 			Eventually(func(g Gomega) {
@@ -476,7 +476,7 @@ var _ = Describe("Tenant Controller", func() {
 					}, nil
 				},
 			}
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory, nil)
 
 			By("reconciling until job is triggered and fails")
 			Eventually(func(g Gomega) {
@@ -537,7 +537,7 @@ var _ = Describe("Tenant Controller", func() {
 					return nil, fmt.Errorf("connection refused")
 				},
 			}
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory, nil)
 
 			By("first reconcile: trigger fails, records job with empty JobID")
 			Eventually(func(g Gomega) {
@@ -604,7 +604,7 @@ var _ = Describe("Tenant Controller", func() {
 				})).To(Succeed())
 			}
 
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0, nil)
 			Eventually(func(g Gomega) {
 				_, err := r.Reconcile(ctx, mcReconcileRequest(nn))
 				g.Expect(err).NotTo(HaveOccurred())
@@ -638,7 +638,7 @@ var _ = Describe("Tenant Controller", func() {
 					}, nil
 				},
 			}
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, provider, 1*time.Second, provisioning.DefaultMaxJobHistory, nil)
 
 			By("deleting the Tenant CR")
 			Expect(k8sClient.Get(ctx, nn, tenant)).To(Succeed())
@@ -700,7 +700,7 @@ var _ = Describe("Tenant Controller", func() {
 				})).To(Succeed())
 			}
 
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 0, 0, nil)
 			Eventually(func(g Gomega) {
 				_, err := r.Reconcile(ctx, mcReconcileRequest(nn))
 				g.Expect(err).NotTo(HaveOccurred())
@@ -718,7 +718,7 @@ var _ = Describe("Tenant Controller", func() {
 		})
 
 		It("should block deletion until StorageClass is manually removed", func() {
-			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 1*time.Second, 0)
+			r := NewTenantReconciler(testMcManager, "default", mcmanager.LocalCluster, nil, 1*time.Second, 0, nil)
 
 			By("deleting the Tenant CR")
 			Expect(k8sClient.Get(ctx, nn, tenant)).To(Succeed())

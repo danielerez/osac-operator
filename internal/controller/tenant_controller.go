@@ -31,13 +31,18 @@ import (
 	"k8s.io/apimachinery/pkg/api/equality"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/events"
+	"k8s.io/client-go/util/workqueue"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/controller-runtime/pkg/event"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 	mcbuilder "sigs.k8s.io/multicluster-runtime/pkg/builder"
 	mchandler "sigs.k8s.io/multicluster-runtime/pkg/handler"
 	mcmanager "sigs.k8s.io/multicluster-runtime/pkg/manager"
@@ -61,6 +66,7 @@ type TenantReconciler struct {
 	ProvisioningProvider provisioning.ProvisioningProvider
 	StatusPollInterval   time.Duration
 	MaxJobHistory        int
+	dbEventCh            <-chan event.TypedGenericEvent[string]
 }
 
 // +kubebuilder:rbac:groups=osac.openshift.io,resources=tenants,verbs=get;list;watch;create;update;patch;delete
@@ -78,6 +84,7 @@ func NewTenantReconciler(
 	provisioningProvider provisioning.ProvisioningProvider,
 	statusPollInterval time.Duration,
 	maxJobHistory int,
+	dbEventCh <-chan event.TypedGenericEvent[string],
 ) *TenantReconciler {
 	if mgr == nil {
 		panic("mgr must not be nil")
@@ -101,6 +108,7 @@ func NewTenantReconciler(
 		ProvisioningProvider: provisioningProvider,
 		StatusPollInterval:   statusPollInterval,
 		MaxJobHistory:        maxJobHistory,
+		dbEventCh:            dbEventCh,
 	}
 }
 
@@ -715,7 +723,7 @@ func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 	}
 
 	// Tenant CR is reconciled from local cluster only
-	return mcbuilder.ControllerManagedBy(mgr).
+	builder := mcbuilder.ControllerManagedBy(mgr).
 		For(&v1alpha1.Tenant{},
 			mcbuilder.WithPredicates(tenantNamespacePredicate(r.tenantNamespace)),
 			mcbuilder.WithEngageWithLocalCluster(true),
@@ -735,8 +743,30 @@ func (r *TenantReconciler) SetupWithManager(mgr mcmanager.Manager) error {
 			&storagev1.StorageClass{},
 			mchandler.EnqueueRequestsFromMapFunc(r.mapStorageClassToTenant),
 			mcbuilder.WithPredicates(storageClassTenantPredicate()),
-		).
-		Complete(r)
+		)
+
+	if r.dbEventCh != nil {
+		builder = builder.WatchesRawSource(
+			source.TypedChannel(r.dbEventCh, r.dbEventHandler()),
+		)
+	}
+
+	return builder.Complete(r)
+}
+
+func (r *TenantReconciler) dbEventHandler() handler.TypedEventHandler[string, mcreconcile.Request] {
+	return handler.TypedFuncs[string, mcreconcile.Request]{
+		GenericFunc: func(_ context.Context, evt event.TypedGenericEvent[string], q workqueue.TypedRateLimitingInterface[mcreconcile.Request]) {
+			q.Add(mcreconcile.Request{
+				Request: reconcile.Request{
+					NamespacedName: types.NamespacedName{
+						Namespace: r.tenantNamespace,
+						Name:      evt.Object,
+					},
+				},
+			})
+		},
+	}
 }
 
 // storageClassTenantPredicate returns a predicate that passes only StorageClasses

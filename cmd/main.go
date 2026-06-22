@@ -48,6 +48,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	cluster "sigs.k8s.io/controller-runtime/pkg/cluster"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -64,6 +65,7 @@ import (
 	"github.com/osac-project/osac-operator/internal/controller"
 	"github.com/osac-project/osac-operator/internal/migrations"
 	"github.com/osac-project/osac-operator/pkg/aap"
+	"github.com/osac-project/osac-operator/pkg/dbwatch"
 	"github.com/osac-project/osac-operator/pkg/provisioning"
 	// +kubebuilder:scaffold:imports
 )
@@ -101,6 +103,10 @@ const (
 
 	// Tenant configuration
 	envTenantNamespace = "OSAC_TENANT_NAMESPACE"
+
+	// Database watch configuration
+	envDatabaseURL          = "OSAC_DATABASE_URL"
+	envDatabasePollInterval = "OSAC_DATABASE_POLL_INTERVAL"
 
 	// Remote cluster (tenant and compute-instance controllers)
 	envRemoteClusterKubeconfig = "OSAC_REMOTE_CLUSTER_KUBECONFIG"
@@ -360,7 +366,8 @@ func setupComputeInstanceControllers(
 	return nil
 }
 
-// setupTenantController registers the Tenant controller with AAP storage provisioning templates.
+// setupTenantController registers the Tenant controller with AAP storage provisioning templates
+// and an optional database watcher for tenant change detection.
 func setupTenantController(mgr mcmanager.Manager, maxJobHistory int) error {
 	targetCluster := targetClusterFromManager(mgr)
 	tenantNamespace := os.Getenv(envTenantNamespace)
@@ -388,6 +395,8 @@ func setupTenantController(mgr mcmanager.Manager, maxJobHistory int) error {
 			"deprovisionTemplate", tenantDeprovisionTemplate)
 	}
 
+	dbEventCh, watcher := setupTenantDBWatcher(tenantNamespace)
+
 	if err := (controller.NewTenantReconciler(
 		mgr,
 		tenantNamespace,
@@ -395,10 +404,48 @@ func setupTenantController(mgr mcmanager.Manager, maxJobHistory int) error {
 		tenantProvider,
 		tenantPollInterval,
 		maxJobHistory,
+		dbEventCh,
 	)).SetupWithManager(mgr); err != nil {
 		return fmt.Errorf("tenant controller: %w", err)
 	}
+
+	if watcher != nil {
+		if err := mgr.GetLocalManager().Add(watcher); err != nil {
+			return fmt.Errorf("tenant database watcher: %w", err)
+		}
+	}
+
 	return nil
+}
+
+// setupTenantDBWatcher creates the database watcher if OSAC_DATABASE_URL is set.
+// Returns a nil channel and nil watcher if not configured.
+func setupTenantDBWatcher(tenantNamespace string) (<-chan event.TypedGenericEvent[string], *dbwatch.Watcher) {
+	databaseURL := os.Getenv(envDatabaseURL)
+	if databaseURL == "" {
+		setupLog.Info("database watcher disabled: OSAC_DATABASE_URL not set")
+		return nil, nil
+	}
+
+	pollInterval := helpers.GetEnvWithDefault(envDatabasePollInterval, 30*time.Second)
+
+	ch := make(chan event.TypedGenericEvent[string], 256)
+	enqueuer := func(tenantName string) {
+		select {
+		case ch <- event.TypedGenericEvent[string]{Object: tenantName}:
+		default:
+			setupLog.V(1).Info("database watcher event channel full, dropping event", "tenant", tenantName)
+		}
+	}
+
+	querier := dbwatch.NewPgQuerier(databaseURL, setupLog)
+	watcher := dbwatch.New(querier, pollInterval, enqueuer, setupLog)
+
+	setupLog.Info("database watcher configured",
+		"pollInterval", pollInterval,
+		"tenantNamespace", tenantNamespace)
+
+	return ch, watcher
 }
 
 // setupNetworkingControllers registers the VirtualNetwork, Subnet, SecurityGroup, PublicIPPool,
